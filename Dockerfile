@@ -1,7 +1,7 @@
 FROM node:lts-stretch
 
-ADD . ./docker
-
+ADD . ./app
+WORKDIR /app
 RUN npm run build
 
 # Running the app
