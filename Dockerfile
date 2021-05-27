@@ -1,9 +1,6 @@
-FROM node:6.14
+FROM node:lts-stretch
 
-WORKDIR D:\Gnoseología Sitiana\EMBL\Bioinformatics\Interface\evocell-app-nextjs\
-RUN mkdir ./docker
-
-COPY . ./docker
+ADD . ./docker
 
 RUN npm run build
 
