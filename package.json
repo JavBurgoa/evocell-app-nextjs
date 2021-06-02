@@ -8,8 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.17.0",
+    "aws-sdk": "^2.916.0",
+    "minio": "^7.0.18",
     "next": "10.2.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "streamtoarray": "^3.0.3",
+    "username": "^5.1.0"
   }
 }
