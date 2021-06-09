@@ -1,9 +1,8 @@
-import fs from 'fs';
 import Link from 'next/link';
 var Minio = require('minio');
 
 // Main datasheet home page
-const Home = ({ data }) => {
+const Home = ({ metaData }) => {
 	// List all JSON files given our structure
 	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
 	
@@ -24,7 +23,7 @@ const Home = ({ data }) => {
 		  </thead>
 		  <tbody>
 			{
-			data.map( array => <>
+			metaData.map( array => <>
 							   <tr>
 									{columns.map( col => <td key = {col}>{array[col]}</td>) }
 
@@ -64,22 +63,10 @@ export async function getStaticProps() {
 	//##############################################################################################################//
 	//##############################################################################################################/
 
-	// Instantiate the minio client with the endpoint
-	// and access keys as shown below.
-	var minioClient = new Minio.Client({
-	    endPoint: 's3.embl.de',
-	    port: 443,
-	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-	    accessKey: 'tHewRc4518A4ZjlzBoVdRnw3f1AA59Tb', // Need to export them with set AWS_ACCESS_KEY_ID='' and  AWS_SECRET_ACCESS_KEY=''
-	    secretKey: 'x1EEMD9HXoK0O7hvGkHDA6I2xFEZ5tel'
-	});
-
-
-	// list all objects in Stream format
-	var Steam = minioClient.listObjects('evocell','', true)
-
-	// Function to make arrays out of Streams (I don't know how to getStaticProps() so export streams)
-	//**********************************************//
+	//#####################
+	//###### FUNCTIONS
+	//#####################
+	// Function to make arrays out of Streams (I don't know how to getStaticProps() export streams)
 	const toArray = async function (stream) {
 	    const array = [];
 		    try {
@@ -88,93 +75,76 @@ export async function getStaticProps() {
 		        }
 		    }
 		    catch (ex) {
-		        const error = new StreamToArrayError_1.StreamToArrayError(ex.message, array);
-		        throw error;
+		        //const error = new StreamToArrayError_1.StreamToArrayError(ex.message, array);
+		        throw ex;
 		    }
 		    return array;
 	};
-	//*********************************************//
 
-	// Transform stream to array
-	var array = await toArray(Steam)
-	for(var i in array){
-		console.log(array[i].name)
+	// Eliminate Duplicates inside array
+	let eliminateDups = (names) => names.filter((v,i) => names.indexOf(v) === i);
+
+	// Get data within file in Minio database
+	function getJSON(bucket, name) {
+	    const buf = []
+	    return new Promise((resolve, reject) => {
+	        minioClient.getObject(bucket, name, (err, stream) => {
+	            if (err) {
+	                return reject(err)
+	            }
+	            stream.on('data', (chunk) => buf.push(chunk))
+	            stream.on('end', () => {
+	                resolve(JSON.parse(buf.toString('ASCII')))
+	            })
+	        })
+	    })
+	}
+	
+
+
+	//#####################
+	//#### CONNECT MINIO
+	//#####################
+
+	// Instantiate the minio client with the endpoint and access keys as shown below.
+	var minioClient = new Minio.Client({
+	    endPoint: 's3.embl.de',
+	    port: 443,
+	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
+	    accessKey: , // Need to export them with set AWS_ACCESS_KEY_ID='' and  AWS_SECRET_ACCESS_KEY=''
+	    secretKey:
+	});
+
+	console.log(process.env.MINIO_CERT_PASSWD)
+
+	//###################
+	//###### GET DATA
+	//###################
+
+	// Get all species names
+	// list all objects in Stream format
+	var species = minioClient.listObjects('evocell','', true)
+	var species = await toArray(species)
+
+	// Get species names (with '_')
+	var species = species.map(function(e){
+		return e.name.split('/')[0]
+	})   
+	var species = eliminateDups(species)
+
+	
+
+
+	// Get all metadata from JSON files in Minio
+	var metaData = []
+	for(var sp in species){
+		var dat = await getJSON('evocell', species[sp] + '/' + species[sp] + '.json')
+		metaData.push(dat)
 	}
 
 
-
-// hERE TRIALS TO OUTPUT STREAMS THAT DID NOT WORK
-//	var chunksos = []
-
-	// Error handler
-//	stream.once('error', (err) => {
-//	    console.error("Error:" + err); 
-//	});
-
-
-	// treat each object's name to get species
-//	stream.on('data', (chunk) => {
-//	    chunksos.push(chunk.name.split('/')[0]); // Get only species name
-//		chunksos = chunksos.filter((v,i) => chunksos.indexOf(v) === i) // remove duplicate species
-//		console.log(chunksos) // Outputs all species names
-//	});
-
-
-
-	// When files are done being read
-	// console.log all Json files in our minio
-//	stream.on('end', () => {
-		// For each Species name...
-//		for(var i in chunksos){
-
-//			var pathToJSONS = chunksos[i] + '/'+ chunksos[i] + '.json'
-
-//			minioClient.getObject('evocell', pathToJSONS, function(err, dataStream) {
-  //				if (err) {
-//    				return console.log(err)
-//  				}
-// 				else dataStream.on('data', function(chunk) {
-//    				console.log(chunk.toString('ASCII'))
-//      			})
-//			});
-
-//		}
-//	});
-
-
-	// Same as before but hardcoded for each object
-	// read JSON
-//	minioClient.getObject('evocell', 'Spongilla_lacustris/Spongilla_lacustris.json', function(err, dataStream) {
-//	  if (err) {
-//	    return console.log(err)
-//	  }
-//	  else dataStream.on('data', function(chunk) {
-//	    console.log(chunk.toString('ASCII'))
-//	      })
-//	});
-
-	//##############################################################################################################//
-	//##############################################################################################################//
-
-
-
-
-	// Local files
-	//******************************//
-
-
-	const speciesNames = fs.readdirSync('../../Datasets/S3database/'); // important: SYNC
-	const databasePath = '../../Datasets/S3database/'
-	const pathsToFiles = speciesNames.map(species => databasePath + species + '/' + species + '.json')
-
-	var data = []
-	for(var path in pathsToFiles){
-		const a = fs.readFileSync(pathsToFiles[path], 'utf8', (err, jsonString) => { return jsonString }); // important: SYNC
-		data.push(JSON.parse(a))
-}
-
   	return {
-  	  props: {data}
+  	  props: {metaData}
   }
 };
 

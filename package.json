@@ -13,8 +13,6 @@
     "minio": "^7.0.18",
     "next": "10.2.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "streamtoarray": "^3.0.3",
-    "username": "^5.1.0"
+    "react-dom": "17.0.2"
   }
 }
