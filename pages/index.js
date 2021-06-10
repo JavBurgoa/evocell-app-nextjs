@@ -111,11 +111,9 @@ export async function getStaticProps() {
 	    endPoint: 's3.embl.de',
 	    port: 443,
 	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-	    accessKey: , // Need to export them with set AWS_ACCESS_KEY_ID='' and  AWS_SECRET_ACCESS_KEY=''
-	    secretKey:
+	    accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
+	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
 	});
-
-	console.log(process.env.MINIO_CERT_PASSWD)
 
 	//###################
 	//###### GET DATA
