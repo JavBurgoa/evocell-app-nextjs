@@ -6,11 +6,11 @@ const Header = () => {
 			<div>
 				<Head>
 					<title>EvoCell App</title>
-					<meta name="viewport" content= "initial-scale=1.0", width="device-width" />
-					<link rel="shortcut icon" href=".ico" />
+					<meta name="viewport" content= "initial-scale=1.0" width="device-width" />
+					<link rel="shortcut icon" href="/evocell.ico" />
 				</Head>
 			</div>
 		)
 }
 
-export default header;
+export default Header;

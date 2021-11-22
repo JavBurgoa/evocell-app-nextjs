@@ -1,5 +1,6 @@
 import Link from 'next/link';
 var Minio = require('minio');
+import Image from 'next/image'
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
@@ -7,7 +8,6 @@ const Home = ({ metaData }) => {
 	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
 	
 	const al = (e, path) => {return alert(path)} //erase
-
 	return (
 	<>
 		<table>
@@ -28,7 +28,13 @@ const Home = ({ metaData }) => {
 									{columns.map( col => <td key = {col}>{array[col]}</td>) }
 
 									<td className = "buttonContainer">
-										<button onClick={(e) => al(e, '../../Datasets/S3database/' + array.Species.replace(' ', '_') + '/' + array.Species.replace(' ', '_') + '.json')}>↓</button>
+										<button onClick={(e) => alert("Download")}><Image 
+																					src = "/down.png"
+																					alt = "Download picture"
+																					width = {20}
+																					height = {20}
+																				/>
+										</button>
 									</td>
 							   </tr>
 							   </>
@@ -100,6 +106,17 @@ export async function getStaticProps() {
 	    })
 	}
 	
+	//Function to get presigned URLs for later download of h5ad files
+	function getH5AD_URLs(bucket, name) {
+	    return new Promise((resolve, reject) => {
+	        minioClient.presignedUrl('GET', bucket, name, 60*30, function(err, presignedUrl) {
+  				if (err) return console.log(err)
+  				
+  				resolve(presignedUrl)
+			})
+	    }
+	  )
+	}
 
 
 	//#####################
@@ -114,6 +131,7 @@ export async function getStaticProps() {
 	    accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
 	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
 	});
+
 
 	//###################
 	//###### GET DATA
@@ -130,8 +148,6 @@ export async function getStaticProps() {
 	})   
 	var species = eliminateDups(species)
 
-	
-
 
 	// Get all metadata from JSON files in Minio
 	var metaData = []
@@ -140,6 +156,16 @@ export async function getStaticProps() {
 		metaData.push(dat)
 	}
 
+	//##################################
+	//#### PRE SIGNED URLS FOR DOWNLOAD
+	//##################################
+	var h5adURLs = []
+	for(var sp in species){
+		var dat = await getH5AD_URLs('evocell', species[sp] + '/' + species[sp] + '.h5ad')
+		h5adURLs.push(dat)
+	}
+
+	console.log(h5adURLs[1])
 
   	return {
   	  props: {metaData}

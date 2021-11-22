@@ -46,7 +46,7 @@ thead tr{
 	font-family: 'ABeeZee', sans-serif;
 	text-align:left;
 	font-size: 20px;
-	background-color: #009879;
+	background-color: #14ab9c;
     color: #ffffff;
 }
 
@@ -67,10 +67,10 @@ table td {
 	padding: 12px 15px;
 }
 
-
 table tbody tr{
 	border-bottom: 1px solid #dddddd;
 	font-family: 'Arimo', sans-serif;
+	padding:0.001em;
 }
 
 table tbody tr:nth-of-type(even) {
@@ -78,21 +78,28 @@ table tbody tr:nth-of-type(even) {
 }
 
 table tbody tr:last-of-type {
-	border-bottom: 2px solid #009879;
+	border-bottom: 2px solid #14ab9c;
 	border-radius: 0 10px 0 0;
 }
+
+table tbody tr:hover{
+	box-shadow: inset 5px 0px 0px 0px #14ab9c;
+}
+
 
 .buttonContainer{
 	text-align: center;
 }
 
 .buttonContainer button{
-	font-size:20px;
 	font-weight: bold;
-	color: white;
-	background-color: #056F85;
+	background-color: transparent;
 	border-color: transparent;
 	cursor: pointer;
 	border-radius: 5px 5px 5px 5px;
 
+}
+
+.buttonContainer button:hover{
+	filter: drop-shadow(0px 0px 1px black);
 }
