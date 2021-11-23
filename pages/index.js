@@ -1,16 +1,19 @@
 import Link from 'next/link';
 var Minio = require('minio');
-import Image from 'next/image'
+import Image from 'next/image';
+
+
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
 	// List all JSON files given our structure
+	console.log(metaData)
 	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
 	
 	const al = (e, path) => {return alert(path)} //erase
 	return (
 	<>
-		<table>
+		<table className="Datasheetable">
 		  <thead>
 			<tr>
 				<th className="speciesHeader">Species</th>
@@ -139,33 +142,36 @@ export async function getStaticProps() {
 
 	// Get all species names
 	// list all objects in Stream format
-	var species = minioClient.listObjects('evocell','', true)
+	var species = minioClient.listObjects('evocell','',  true)
 	var species = await toArray(species)
-
+	
 	// Get species names (with '_')
 	var species = species.map(function(e){
-		return e.name.split('/')[0]
-	})   
+		return e.name.split('/')[1] // Pick the name of th folder afte Datasets/ (the specieds name)
+	})  
+
 	var species = eliminateDups(species)
+	var metaData = species 
 
 
 	// Get all metadata from JSON files in Minio
 	var metaData = []
 	for(var sp in species){
-		var dat = await getJSON('evocell', species[sp] + '/' + species[sp] + '.json')
+		var dat = await getJSON('evocell', "Datasets/" + species[sp] + '/' + species[sp] + '.json')
 		metaData.push(dat)
 	}
 
 	//##################################
 	//#### PRE SIGNED URLS FOR DOWNLOAD
 	//##################################
-	var h5adURLs = []
-	for(var sp in species){
-		var dat = await getH5AD_URLs('evocell', species[sp] + '/' + species[sp] + '.h5ad')
-		h5adURLs.push(dat)
-	}
+	//take a look at URL generator demo, maybe it's differernt than this:
+	//var h5adURLs = []
+	//for(var sp in species){
+	//	var dat = await getH5AD_URLs('evocell', species[sp] + '/' + species[sp] + '.h5ad')
+	//	h5adURLs.push(dat)
+	//}
 
-	console.log(h5adURLs[1])
+	//console.log(h5adURLs[1])
 
   	return {
   	  props: {metaData}
