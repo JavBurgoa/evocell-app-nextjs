@@ -7,10 +7,7 @@ import Image from 'next/image';
 // Main datasheet home page
 const Home = ({ metaData }) => {
 	// List all JSON files given our structure
-	console.log(metaData)
 	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
-	
-	const al = (e, path) => {return alert(path)} //erase
 	return (
 	<>
 		<table className="Datasheetable">
@@ -90,6 +87,22 @@ export async function getStaticProps() {
 		    return array;
 	};
 
+	// create function startsWith because it doesnt exist, evaluates whther a string starts with
+	String.prototype.startsWith = function(str){ return this.indexOf(str) == 0; }
+	
+	function keep_only_Datasets(species){
+		//This function takes the array of paths and eliminates all files beginning in anything other than "Datasets".
+		// This is necessary becauese we don't want to show in the datasheet anything that is not within the Datasets folder in Minio
+		var out = []
+		species.map(function(path){
+			if(path.name.startsWith("Dataset")){
+				out.push(path)
+			}
+		})
+
+		return(out)  
+	}
+	
 	// Eliminate Duplicates inside array
 	let eliminateDups = (names) => names.filter((v,i) => names.indexOf(v) === i);
 
@@ -108,7 +121,8 @@ export async function getStaticProps() {
 	        })
 	    })
 	}
-	
+
+
 	//Function to get presigned URLs for later download of h5ad files
 	function getH5AD_URLs(bucket, name) {
 	    return new Promise((resolve, reject) => {
@@ -120,6 +134,8 @@ export async function getStaticProps() {
 	    }
 	  )
 	}
+
+
 
 
 	//#####################
@@ -144,16 +160,16 @@ export async function getStaticProps() {
 	// list all objects in Stream format
 	var species = minioClient.listObjects('evocell','',  true)
 	var species = await toArray(species)
+
+	var species = keep_only_Datasets(species)
 	
 	// Get species names (with '_')
 	var species = species.map(function(e){
 		return e.name.split('/')[1] // Pick the name of th folder afte Datasets/ (the specieds name)
 	})  
-
+	
 	var species = eliminateDups(species)
-	var metaData = species 
-
-
+	
 	// Get all metadata from JSON files in Minio
 	var metaData = []
 	for(var sp in species){
@@ -172,10 +188,10 @@ export async function getStaticProps() {
 	//}
 
 	//console.log(h5adURLs[1])
+	return {
+		props: {metaData}
+	}
 
-  	return {
-  	  props: {metaData}
-  }
 };
 
 //=================================================================//

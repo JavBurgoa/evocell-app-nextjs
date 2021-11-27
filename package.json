@@ -10,10 +10,13 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.17.0",
     "aws-sdk": "^2.916.0",
+    "axios": "^0.24.0",
+    "form-data": "^4.0.0",
+    "formdata-node": "^4.3.1",
     "minio": "^7.0.18",
-    "next": "10.2.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "next": "^12.0.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "streamsaver": "^2.0.5"
   },
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
@@ -24,5 +27,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "7.32.0",
+    "eslint-config-next": "12.0.4"
+  }
 }
