@@ -1,13 +1,15 @@
 import Link from 'next/link';
 var Minio = require('minio');
 import Image from 'next/image';
-
+import downImage from "/public/down.png" // download button image
 
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
 	// List all JSON files given our structure
 	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
+    console.log(metaData)
+    
 	return (
 	<>
 		<table className="Datasheetable">
@@ -28,9 +30,9 @@ const Home = ({ metaData }) => {
 									{columns.map( col => <td key = {col}>{array[col]}</td>) }
 
 									<td className = "buttonContainer">
-										<button onClick={(e) => alert("Download")}><Image 
-																					src = "/down.png"
-																					alt = "Download picture"
+										<button onClick={(e) => alert("Download")}><Image
+																					src = {downImage}
+																					alt = "Download"
 																					width = {20}
 																					height = {20}
 																				/>
@@ -176,6 +178,8 @@ export async function getStaticProps() {
 		var dat = await getJSON('evocell', "Datasets/" + species[sp] + '/' + species[sp] + '.json')
 		metaData.push(dat)
 	}
+
+ 
 
 	//##################################
 	//#### PRE SIGNED URLS FOR DOWNLOAD

@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.17.0",
@@ -13,8 +14,12 @@
     "axios": "^0.24.0",
     "form-data": "^4.0.0",
     "formdata-node": "^4.3.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^10.0.1",
     "minio": "^7.0.18",
     "next": "^12.0.4",
+    "next-optimized-images": "^2.6.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "streamsaver": "^2.0.5"

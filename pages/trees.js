@@ -1,4 +1,5 @@
 import style from "../styles/Trees.module.css"
+import Image from 'next/image'
 var Minio = require('minio');
 import {FormData} from "formdata-node" // installd from npm install fromata-node
 const https = require('https')
@@ -7,7 +8,7 @@ const axios = require('axios')
 
 const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
-	////// <scripts> //////
+	////////////////////////////////////// <scripts> //////////////////////////////////
 	/* Make this onload somehow
 	function enterKey(){
 		const input = document.getElementById("searchBar");
@@ -60,13 +61,16 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
     	}
 	}
 	
+
+	//wrap these three functions in a single one, and make the elementOfTreelist do it
 	function fetchTree(){
 		// When you click on any of the appended trees, it retrieves the exact tree from minio
 		// kepin mind some trees end in .faa.aln.nw and other in .aln.nw, so you will have to add try statements here and there.
+		//name of tree will be data[selcGene] again
 		return("")
 	}
 
-	function customETE(){
+	function customETE(nameoftree){
 		//POst tree to ETE and output path to iframe
 		return("")
 	}
@@ -77,29 +81,55 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		const search = document.getElementById("search");
 		search.style["display"] = "none";
 		
-		
-		const eteDefault = document.getElementById("div_ete");
-		eteDefault.style["display"] = "block";
-		console.log(eteDefault)
-		console.log(eteDefault.style)
+		const ete_div = document.getElementById("div_ete");
+		ete_div.style["display"] = "block";
+
+		//load ete. If you load it from the beginning it says (cannot load bevcuase zoom = 0)
+		const eteDefault = document.getElementById("eteDefault");
+		eteDefault.src = "http://127.0.0.1:5000/static/gui.html?tree=7868753" // This url should come from static props
 
 	}
-	
+
+	function iframeListen(){
+		// Function that is activated when the ete4 iframe loads
+		// It adds an event listener that is triggered every time chorme recieves a message from the igrame, this is every time you make an action on the iframe.
+		
+		window.addEventListener('message', handler);
+		
+		
 
 
-	////// </scripts> //////
-	// Execute a function when the user releases a key on the keyboard
-	/*
-	<div>
-				{
-					treesPerGene.map( array => <p>{
-											array.value.map( element => <p>{element}</p>)
-										  }
-									   </p>
-							)
-				}
-			</div>
-	*/
+	}
+
+	function handler() {
+		/*
+		This should be added, being eteURL a static prop
+		if (event.origin != eteUrl)
+        	return("")
+		
+		const dict = {
+			"XLOC_006965":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_006965",
+			"XLOC_005491":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_005491"
+		}
+
+		var iframe = document.getElementById('eteDefault');
+		iframe.contentWindow.postMessage({
+			selectionMode: "saved",
+			eventType: "select",
+			selectCommand: "/e p.get('hasData') == True"
+		}, "http://127.0.0.1:5000/")
+		
+    	*/
+	}
+
+
+	const eteLoader = ({ src, width, quality }) => { // needed for static export to work. Check https://nextjs.org/docs/api-reference/next/image#loader
+  		return `http://127.0.0.1:5000/`
+	}
+	/////////////// !!!!!!!!!!!!!!!!!! Change <img> to <Image/> to allow next export (otherwise it doesn work) you need to play with loaders like the one above (https://nextjs.org/docs/api-reference/next/image#loader)  
+
+
+	////////////////////////////////////// <scripts> //////////////////////////////////
 
 	return (
 		<>
@@ -114,7 +144,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
 
 		<div id="div_ete" className={style.div_ete}>
-			<iframe src="http://127.0.0.1:5000/" className={style.ete4frame} title="ete4" id = "eteDefault">
+			<iframe onLoad={(e) => iframeListen()} className={style.ete4frame} title="ete4" id = "eteDefault">
 			</iframe>
 			<p>🡡🡡🡡 http://127.0.0.1:5000/ --------------------- http://127.0.0.1:5000/trees=treeid 🡣🡣🡣</p>
 			<iframe src={ete_url} className={style.ete4frame} title="ete5">
@@ -123,8 +153,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		</>
 		)
 }
-
-
 // Connection to Minio
 export async function getStaticProps() {
 
@@ -204,7 +232,7 @@ export async function getStaticProps() {
 
 	// Get newicks from Minio and take only the gene names per newick file
 	var newicks = []
-	for(var tr in trees[1,3]){ //(var tr in trees)
+	for(var tr in trees[1,2,3,4,5,6,7,8,9]){ //(var tr in trees). Change to use less trees
 		var dat = await getNewick('evocell', "Trees/" + trees[tr])
 		var dat = dat.toUpperCase();
 		var dat = dat.split(/[\(\),\:]+/)
@@ -216,7 +244,7 @@ export async function getStaticProps() {
 	    	value: dat
 		});
 	}
-	console.log(newicks)
+
 
 	// switch tree:genes dict to gene:trees
 	var treesPerGene = {};
