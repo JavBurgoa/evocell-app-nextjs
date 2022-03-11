@@ -32,6 +32,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+# JS to upload h5ad and JSON to MINIO
+/upload_data_minio.js
 
 # static htmls
 /out/

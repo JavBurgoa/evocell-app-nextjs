@@ -68,7 +68,7 @@ table td {
 	padding: 12px 15px;
 }
 
-table tbody tr{
+table tbody tr {
 	border-bottom: 1px solid #dddddd;
 	font-family: 'Arimo', sans-serif;
 	padding:0.001em;
@@ -128,3 +128,25 @@ nav a{
 nav a:hover{
 	background-color: #777777
 }
+
+
+
+.accordion * {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+  }
+  
+  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+  .active, .accordion:hover {
+    background-color: #ccc;
+  }
+  
+
+

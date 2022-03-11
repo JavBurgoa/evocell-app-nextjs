@@ -1,44 +1,50 @@
-import Link from 'next/link';
 var Minio = require('minio');
 import Image from 'next/image';
 import downImage from "/public/down.png" // download button image
-
+import Script from 'next/script'
+import {speciesExists} from "/static/indexFunctions"
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
 	// List all JSON files given our structure
-	const columns = ['Species', 'Paper', 'Ontogenic_Stage', 'Number_of_cells', 'GEO_Number']
-    console.log(metaData)
+	const columns = ['species', 'title', 'ontogenic_stage', "tissue_type"]
     
 	return (
 	<>
+        <Script src = "/static/indexScript.js"/>
+
 		<table className="Datasheetable">
 		  <thead>
 			<tr>
 				<th className="speciesHeader">Species</th>
 				<th className="paperHeader">Paper</th>
 				<th>Ontogenic stage</th>
-				<th>Number of cells</th>
-				<th>GEO Number</th>
+                <th>Tissue</th>
 				<th className="downloadHeader">Download</th>
 			</tr>
 		  </thead>
+          
 		  <tbody>
-			{
-			metaData.map( array => <>
-							   <tr>
-									{columns.map( col => <td key = {col}>{array[col]}</td>) }
+          
+			{metaData.map( array => <>
+                                    <tr className = {array["species"]}>
 
-									<td className = "buttonContainer">
-										<button onClick={(e) => alert("Download")}><Image
-																					src = {downImage}
-																					alt = "Download"
-																					width = {20}
-																					height = {20}
-																				/>
-										</button>
-									</td>
-							   </tr>
+                                            { columns.map( col => <td key = {col}>{array[col]}</td>) }
+
+                                            <td className = "buttonContainer">
+                                                <button onClick={(e) => alert("Download")}>
+                                                    <Image
+                                                    src = {downImage}
+                                                    alt = "Download"
+                                                    width = {20}
+                                                    height = {20}
+                                                    />
+                                                </button>
+                                                
+                                            </td>
+                                            
+                                    </tr>
+                                    
 							   </>
 					)
 			}
@@ -160,26 +166,46 @@ export async function getStaticProps() {
 
 	// Get all species names
 	// list all objects in Stream format
-	var species = minioClient.listObjects('evocell','',  true)
-	var species = await toArray(species)
+	var miniObjects = minioClient.listObjects('evocell', 'outputs',  true)
 
-	var species = keep_only_Datasets(species)
+	var miniObjects = await toArray(miniObjects)
+	//var species = keep_only_Datasets(species) # Notcesary since we add 'Datasets' to minioClient.listObjects()
 	
 	// Get species names (with '_')
-	var species = species.map(function(e){
-		return e.name.split('/')[1] // Pick the name of th folder afte Datasets/ (the specieds name)
+	var species = miniObjects.map(function(e){
+		return e.name.split('/')[1] // Pick the name of the folder afte Datasets/ (the species names)
 	})  
 	
 	var species = eliminateDups(species)
 	
+
 	// Get all metadata from JSON files in Minio
 	var metaData = []
-	for(var sp in species){
-		var dat = await getJSON('evocell', "Datasets/" + species[sp] + '/' + species[sp] + '.json')
-		metaData.push(dat)
+	for(var i = 0; i < miniObjects.length; i++){
+        
+        // Get JSON files paths
+        var path = miniObjects[i]["name"]
+        if(path.endsWith(".JSON")){
+
+            // Get dictionary from dataset
+		    var dat = await getJSON('evocell', "/" + path)
+            
+            // Add paper dataset identifier (1_1, 3_2, etc.)
+            dat.identifier = path.split("/")[2];
+
+            // Add UCSC hyperklink?
+
+            // put keys in dat["custom"] out of the custom key
+            var dat= Object.assign({}, dat, dat["custom"]);
+            delete dat["custom"];
+
+            // Add to array
+		    metaData.push(dat)
+        }
+
 	}
 
- 
+    console.log(metaData)
 
 	//##################################
 	//#### PRE SIGNED URLS FOR DOWNLOAD
@@ -192,6 +218,7 @@ export async function getStaticProps() {
 	//}
 
 	//console.log(h5adURLs[1])
+
 	return {
 		props: {metaData}
 	}
