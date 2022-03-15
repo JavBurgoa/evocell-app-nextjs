@@ -7,7 +7,6 @@ const NavBar = () => {
 			<Link href = '/trees'><a>Trees</a></Link>
 		</nav>
 		);
-        <Script src = "/static/indexScript.js"/>
 }
 
 export default NavBar;

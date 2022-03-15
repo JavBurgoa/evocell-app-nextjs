@@ -1,8 +1,6 @@
 var Minio = require('minio');
 import Image from 'next/image';
 import downImage from "/public/down.png" // download button image
-import Link from 'next/link'
-import {speciesExists} from "/static/indexFunctions"
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
@@ -17,7 +15,7 @@ const Home = ({ metaData }) => {
             )
         }
     }
-    
+
     // Function for addAccordion onClick event
     const addFuncAccordion = (array) => {
         
