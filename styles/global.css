@@ -43,12 +43,15 @@
 	-moz-border-radius:6px;
 }
 
-thead tr{
+thead{
 	font-family: 'ABeeZee', sans-serif;
 	text-align:left;
 	font-size: 20px;
 	background-color: #14ab9c;
     color: #ffffff;
+    padding-left: 200px;
+    border: 100px black;
+
 }
 
 .speciesHeader{
@@ -68,15 +71,22 @@ table td {
 	padding: 12px 15px;
 }
 
+[class*="_spID"]{
+    visibility: collapse;
+}
+
+
 table tbody tr {
 	border-bottom: 1px solid #dddddd;
 	font-family: 'Arimo', sans-serif;
 	padding:0.001em;
 }
 
+/*
 table tbody tr:nth-of-type(even) {
 	background-color: #f3f3f3;
 }
+*/
 
 table tbody tr:last-of-type {
 	border-bottom: 2px solid #14ab9c;
@@ -87,6 +97,21 @@ table tbody tr:hover{
 	box-shadow: inset 5px 0px 0px 0px #14ab9c;
 }
 
+.accordion{
+    height:80px;
+    width:2000px;
+    background-color:#a8d9e2;
+    vertical-align:middle;
+    column-span: all;
+    font-size: 20px;
+    font-weight: bold; 
+    font-style: italic;
+    cursor: pointer;
+}
+
+.accordion:active{
+    background-color: aqua;
+}
 
 .buttonContainer{
 	text-align: center;

@@ -1,18 +1,42 @@
 var Minio = require('minio');
 import Image from 'next/image';
 import downImage from "/public/down.png" // download button image
-import Script from 'next/script'
+import Link from 'next/link'
 import {speciesExists} from "/static/indexFunctions"
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
-	// List all JSON files given our structure
+	// List all JSON's fileds you want to be displayed
 	const columns = ['species', 'title', 'ontogenic_stage', "tissue_type"]
     
+    // Put a <tr> of class accordion on top of every group of species in the table
+    const addAccordion = (array) => {
+        if (array.first_species_entry === "True") {
+            return(
+                    <tr><td className = "accordion" colSpan={columns.length + 1} onClick={() => addFuncAccordion(array)}>{array.species}</td></tr>
+            )
+        }
+    }
+    
+    // Function for addAccordion onClick event
+    const addFuncAccordion = (array) => {
+        
+                var panel = document.getElementsByClassName(array.species + "_spID")
+
+                for (var i = 0; i < panel.length; i++) {
+                    if (panel[i].style.visibility === "visible"){
+                        panel[i].style.visibility = "collapse"
+                    } 
+                    else { panel[i].style.visibility = "visible" }
+                };
+
+}
+
+
+
+
 	return (
 	<>
-        <Script src = "/static/indexScript.js"/>
-
 		<table className="Datasheetable">
 		  <thead>
 			<tr>
@@ -25,9 +49,11 @@ const Home = ({ metaData }) => {
 		  </thead>
           
 		  <tbody>
-          
+         
 			{metaData.map( array => <>
-                                    <tr className = {array["species"]}>
+                                    {addAccordion(array)}
+
+                                    <tr className = {array["species"] + "_spID"}>
 
                                             { columns.map( col => <td key = {col}>{array[col]}</td>) }
 
@@ -43,8 +69,7 @@ const Home = ({ metaData }) => {
                                                 
                                             </td>
                                             
-                                    </tr>
-                                    
+                                    </tr>                                    
 							   </>
 					)
 			}
@@ -181,6 +206,7 @@ export async function getStaticProps() {
 
 	// Get all metadata from JSON files in Minio
 	var metaData = []
+    var prevSpecies = "example"
 	for(var i = 0; i < miniObjects.length; i++){
         
         // Get JSON files paths
@@ -195,6 +221,15 @@ export async function getStaticProps() {
 
             // Add UCSC hyperklink?
 
+            // is it the first entry from that species? (used to make the table)
+            if (dat.custom.species !== prevSpecies){
+                dat.first_species_entry = "True"
+            }else{
+                dat.first_species_entry = "False"
+            }
+            var prevSpecies = dat.custom.species // record the current species for the next iteration
+            
+
             // put keys in dat["custom"] out of the custom key
             var dat= Object.assign({}, dat, dat["custom"]);
             delete dat["custom"];
@@ -204,8 +239,6 @@ export async function getStaticProps() {
         }
 
 	}
-
-    console.log(metaData)
 
 	//##################################
 	//#### PRE SIGNED URLS FOR DOWNLOAD
