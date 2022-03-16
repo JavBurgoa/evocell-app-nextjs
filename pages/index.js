@@ -1,6 +1,7 @@
 var Minio = require('minio');
 import Image from 'next/image';
 import downImage from "/public/down.png" // download button image
+import Link from 'next/link'
 
 // Main datasheet home page
 const Home = ({ metaData }) => {
@@ -28,11 +29,10 @@ const Home = ({ metaData }) => {
                     else { panel[i].style.visibility = "visible" }
                 };
 
-}
+    }
 
 
-
-
+    // Now the HTML will be generated
 	return (
 	<>
 		<table className="Datasheetable">
@@ -51,23 +51,25 @@ const Home = ({ metaData }) => {
 			{metaData.map( array => <>
                                     {addAccordion(array)}
 
-                                    <tr className = {array["species"] + "_spID"}>
+                                    <Link href={'/' + array["species"].replace("\ ", "_") + "-" + array["identifier"]} key={array["species"].replace("\ ", "_")+ "-" + array["identifier"]}>
+                                        <tr className = {array["species"] + "_spID"}>
 
-                                            { columns.map( col => <td key = {col}>{array[col]}</td>) }
+                                                { columns.map( col => <td key = {col}>{array[col]}</td>) }
 
-                                            <td className = "buttonContainer">
-                                                <button onClick={(e) => alert("Download")}>
-                                                    <Image
-                                                    src = {downImage}
-                                                    alt = "Download"
-                                                    width = {20}
-                                                    height = {20}
-                                                    />
-                                                </button>
+                                                <td className = "buttonContainer">
+                                                    <button onClick={(e) => alert("Download")}>
+                                                        <Image
+                                                        src = {downImage}
+                                                        alt = "Download"
+                                                        width = {20}
+                                                        height = {20}
+                                                        />
+                                                    </button>
+                                                    
+                                                </td>
                                                 
-                                            </td>
-                                            
-                                    </tr>                                    
+                                        </tr> 
+                                    </Link>                                  
 							   </>
 					)
 			}
@@ -124,6 +126,7 @@ export async function getStaticProps() {
 	function keep_only_Datasets(species){
 		//This function takes the array of paths and eliminates all files beginning in anything other than "Datasets".
 		// This is necessary becauese we don't want to show in the datasheet anything that is not within the Datasets folder in Minio
+        // DEPRECATED
 		var out = []
 		species.map(function(path){
 			if(path.name.startsWith("Dataset")){
