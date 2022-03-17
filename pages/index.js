@@ -6,20 +6,20 @@ import Link from 'next/link'
 // Main datasheet home page
 const Home = ({ metaData }) => {
 	// List all JSON's fileds you want to be displayed
-	const columns = ['species', 'title', 'ontogenic_stage', "tissue_type"]
+	const columns = ['title', 'ontogenic_stage', "tissue_type"]
     
     // Put a <tr> of class accordion on top of every group of species in the table
     const addAccordion = (array) => {
         if (array.first_species_entry === "True") {
             return(
-                    <tr><td className = "accordion" colSpan={columns.length + 1} onClick={() => addFuncAccordion(array)}>{array.species}</td></tr>
+                    <tr><td className = "accordion" colSpan={columns.length + 2} onClick={() => addFuncAccordion(array)}>{array.species}</td></tr>
             )
         }
     }
 
     // Function for addAccordion onClick event
     const addFuncAccordion = (array) => {
-        
+            
                 var panel = document.getElementsByClassName(array.species + "_spID")
 
                 for (var i = 0; i < panel.length; i++) {
@@ -29,6 +29,11 @@ const Home = ({ metaData }) => {
                     else { panel[i].style.visibility = "visible" }
                 };
 
+    }
+    const formatText = (str) =>{
+        str = str.charAt(0).toUpperCase() + str.slice(1); // First letter uppercase
+        str = str.replace(/_/gi, " ")
+        return(str)
     }
 
 
@@ -42,7 +47,7 @@ const Home = ({ metaData }) => {
 				<th className="paperHeader">Paper</th>
 				<th>Ontogenic stage</th>
                 <th>Tissue</th>
-				<th className="downloadHeader">Download</th>
+				<th>Explore</th>
 			</tr>
 		  </thead>
           
@@ -53,18 +58,14 @@ const Home = ({ metaData }) => {
 
                                     <Link href={'/' + array["species"].replace("\ ", "_") + "-" + array["identifier"]} key={array["species"].replace("\ ", "_")+ "-" + array["identifier"]}>
                                         <tr className = {array["species"] + "_spID"}>
+                                                <td></td>
+                                                { columns.map( col =>                                                  
+                                                    <td key = {col} className={col + "_td"}>{formatText (array[col])}</td>) }
 
-                                                { columns.map( col => <td key = {col}>{array[col]}</td>) }
-
-                                                <td className = "buttonContainer">
-                                                    <button onClick={(e) => alert("Download")}>
-                                                        <Image
-                                                        src = {downImage}
-                                                        alt = "Download"
-                                                        width = {20}
-                                                        height = {20}
-                                                        />
-                                                    </button>
+                                                    <td className = "buttonContainer">
+                                                        <button onClick={(e) => alert("Explore")}>
+                                                           &#128065; 
+                                                        </button>
                                                     
                                                 </td>
                                                 

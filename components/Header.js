@@ -5,7 +5,7 @@ const Header = () => {
 
 			<div>
 				<Head>
-					<title>EvoCell App</title>
+					<title><h1>EvoCell App</h1></title>
 					<meta name="viewport" content= "initial-scale=1.0" width="device-width" />
 					<link rel="shortcut icon" href="/evocell.ico" />
 				</Head>

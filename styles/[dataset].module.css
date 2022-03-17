@@ -1,0 +1,23 @@
+.descriptionTitle{
+    font-family: 'ABeeZee', sans-serif;
+    font-weight: bold;
+    margin-left: 10px;
+
+}
+
+.description{
+  font-family: 'ABeeZee', sans-serif;
+  margin-left: 15px;
+  margin-right:56%;
+  text-align: justify
+
+}
+
+.UCSCiframe{
+ width:53%;
+ height:60%;
+ position:absolute;
+ right:0px;
+ top:50px;
+ border: 7px solid #044c74
+}

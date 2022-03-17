@@ -1,4 +1,5 @@
 var Minio = require('minio');
+import style from "../styles/[dataset].module.css"
 
 export const getStaticPaths = async () => {
     // Function to make arrays out of Streams (I don't know how to getStaticProps() export streams)
@@ -44,6 +45,8 @@ export const getStaticPaths = async () => {
         fallback: false
     }
 }
+
+
 
 
 
@@ -144,17 +147,46 @@ export const getStaticProps = async (context) => {
     };
 
 
-
+// Actual HTML
 const Details = ({metaData}) =>{
+    
     return(
         
         <div>
-        <p onClick={() => console.log({metaData})}><h1>Holaaaa!</h1></p>
-        <p>{metaData.title}</p>
-        <p>{metaData.abstract}</p>
-        <p>{metaData.geo_series}</p>
+            <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+            <div>
+                <p className={style.descriptionTitle}>Paper</p>
+                <p className={style.description}>{metaData.title}</p>
+            </div>
+            <div>
+                <button data-toggle="collapse" data-target="abstractDesc">Abstract</button>
+                <p id = "abstractDesc" class="collapse" className={style.description}>{metaData.abstract}</p>
+            </div>
+            <div>
+                <p className={style.descriptionTitle}>Methods</p>
+                <p className={style.description}>{metaData.methods}</p>
+            </div>
+            <div>
+                <p className={style.description}>Paper: {metaData.paper_url}</p>
+                <p className={style.description}>doi: {metaData.doi}</p>
+                <p className={style.description}>GEO: {metaData.geo_series}</p>
+                <p className={style.description}>Author's institution: {metaData.institution}</p>
+                <p className={style.description}>Author: {metaData.author}</p>
+                <p className={style.description}>Lab: {metaData.lab}</p>
+                <p className={style.description}>Ontogenic stage: {metaData.custom.ontogenic_stage}</p>
+                <p className={style.description}>Specialised resources: {metaData.custom.more_specialised_resources}</p>
+                <p className={style.description}>Notes: {metaData.custom.notes}</p>
+                <p className={style.description}>Genome: {metaData.custom.genome}</p>
+                <p className={style.description}>Transcriptome: {metaData.custom.transcriptome}</p>
+                <p className={style.description}>Tissue: {metaData.custom.tissue_type}</p>
+                <p className={style.description}>Number of Cells: {metaData.custom.number_of_cells}</p>
+                <p className={style.description}>Sequencing: {metaData.custom.sequencing_method}</p>
+            </div>
+
 
         </div>
+
+
     )
 }
 
