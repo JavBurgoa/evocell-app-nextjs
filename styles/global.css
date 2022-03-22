@@ -134,7 +134,7 @@ table tbody tr:hover{
 
   }
   
-  .active:after {
+.active:after {
     content: "\2796"; /* Unicode character for "minus" sign (-) */
   }
 
