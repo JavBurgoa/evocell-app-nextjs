@@ -32,7 +32,7 @@ const Home = ({ metaData }) => {
     }
     const formatText = (str) =>{
         str = str.charAt(0).toUpperCase() + str.slice(1); // First letter uppercase
-        str = str.replace(/_/gi, " ")
+        str = str.replace(/_/gis, " ")
         return(str)
     }
 
@@ -56,7 +56,7 @@ const Home = ({ metaData }) => {
 			{metaData.map( array => <>
                                     {addAccordion(array)}
 
-                                    <Link href={'/' + array["species"].replace("\ ", "_") + "-" + array["identifier"]} key={array["species"].replace("\ ", "_")+ "-" + array["identifier"]}>
+                                    <Link href={'/' + array["species"].replace("\ ", "_") + "-" + array["identifier"]} key={array["species"].replace("\ ", "_")+ "-" + array["identifier"]} passHref>
                                         <tr className = {array["species"] + "_spID"}>
                                                 <td></td>
                                                 { columns.map( col =>                                                  

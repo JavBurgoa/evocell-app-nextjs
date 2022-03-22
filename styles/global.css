@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=ABeeZee&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap');
 
-body {
-    background-image: url("/public/background.jpg");
-}
 
 .title{
 	overflow:auto;
@@ -110,7 +107,7 @@ table tbody tr:hover{
 
     height:80px;
     width:2000px;
-    background-color:rgb(223, 223, 223);
+    background-color:rgb(235, 235, 235);
     vertical-align:middle;
     column-span: all;
     font-size: 25px;
@@ -164,6 +161,7 @@ table tbody tr:hover{
 
 
 /* Navigation */
+
 nav {
 	background-color: #000000;
 	top:0;
@@ -191,3 +189,13 @@ nav a{
 nav a:hover{
 	background-color: #777777
 }
+
+.active_nav{
+   background-color: white;
+   color:black;
+   border-top: 3px solid black;
+}
+.active_nav:hover{
+    background-color: white;
+    color:black;
+ }

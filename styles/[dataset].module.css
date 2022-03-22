@@ -9,15 +9,74 @@
   font-family: 'ABeeZee', sans-serif;
   margin-left: 15px;
   margin-right:56%;
-  text-align: justify
+  text-align: justify;
 
 }
 
 .UCSCiframe{
- width:53%;
- height:60%;
+ width:50%;
+ height:70%;
  position:absolute;
- right:0px;
- top:50px;
- border: 7px solid #044c74
+ right:3%;
+ top:17%;
+ border: 2px solid #044c74;
+ box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+ -moz-border-radius:6px;
 }
+
+/*Switchable tab styles*/
+.tabs{
+    font-family:'Poppins',sans-serif;
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    width:100%;
+    min-height:100vh;
+}
+
+.sidebar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+}
+
+.tab_btn{
+    background-color:#fff;
+    border:none;
+    border-bottom:1px solid gray;
+    color:#000;
+    cursor:pointer;
+    padding:10px 0;
+    margin:10px 0;
+    outline:none;
+    width:15%;
+}
+.tab_btn_active{
+    border-bottom:2px solid hsl(0, 94%, 66%);
+    color:hsl(0, 94%, 66%);
+    font-weight:bold;
+}
+
+/* tabs content */
+.content{
+    width:100%;
+}
+
+.tab_content{
+    position:relative;
+    left:30%;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    display: none;
+}
+
+.tab_content_active{
+    display:block;
+}
+
+
+
+
