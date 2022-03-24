@@ -1,5 +1,6 @@
 var Minio = require('minio');
 import style from "../styles/[dataset].module.css"
+import Image from "next/image"
 
 export const getStaticPaths = async () => {
     // Function to make arrays out of Streams (I don't know how to getStaticProps() export streams)
@@ -207,6 +208,14 @@ export const getStaticProps = async (context) => {
         tabContent.className = style.tab_content_active // content        
     }
 
+const download = () =>{
+
+    return(DownloadLink)
+}
+
+
+
+  
 
 // Actual HTML
 const Details = ({metaData}) =>{
@@ -214,8 +223,18 @@ const Details = ({metaData}) =>{
     return(
         
         <div>
-            <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+            <div>
+                <div className={style.dataset_btn_div}>
+                    <button className={style.downnload_btn} onClick={()=>getURL("UCSC")}>Download</button>            
+                    <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
+                        UCSC &#x1F517;
+                    </a>
+                    
+                </div>
+                <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+            </div>
 
+            
 
             <div className={style.tabs}>
 
