@@ -127,7 +127,7 @@ export const getStaticProps = async (context) => {
             // Check if the JSON belongs to the species and dataset getStaticPaths is looking for
             var potentialPath = potentialPath.split("/")
             potentialPath.shift() //erase first element ("/outputs/")
-            potentialPath.pop() // erase last element ("/dataset_name/")
+            potentialPath.pop() // erase last element ("/dataset_name.extension")
             potentialPath = potentialPath.join("/")
             
             if(potentialPath === id){
@@ -213,8 +213,38 @@ const download = () =>{
     return(DownloadLink)
 }
 
+// POST request for h5ad downloading
+async function postData(url = '', data = {}) {
+    // This function is th one actually making the post request. 
+    // However it goes inside an async function thadds a .then() after this function
+    // Otherwise it won't work by itself
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data)
+    });
+    const json = await response.json();
+    return json
+  }
+  
+  // send POST request and .then(do whatever)
+async function getH5AD (data){
+      //This is the actual function that goes into the html
 
-
+      postData('http://localhost:3001/', data)
+    .then(res => {
+        alert(res.body)
+          //window.location.href = res.body
+    })
+  
+  }
   
 
 // Actual HTML
@@ -225,7 +255,7 @@ const Details = ({metaData}) =>{
         <div>
             <div>
                 <div className={style.dataset_btn_div}>
-                    <button className={style.downnload_btn} onClick={()=>getURL("UCSC")}>Download</button>            
+                    <button className={style.download_btn} onClick={()=>getH5AD({'Species':'Capitella_teleta_Stage4'})}>Download</button>            
                     <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
                         UCSC &#x1F517;
                     </a>
