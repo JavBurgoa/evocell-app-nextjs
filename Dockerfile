@@ -5,7 +5,7 @@ WORKDIR /app
 
 RUN apt-get install -y zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get install -y nasm
+RUN sudo apt install nasm
 
 
 RUN npm install && npm run build
