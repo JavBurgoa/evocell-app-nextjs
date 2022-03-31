@@ -24,8 +24,8 @@ export const getStaticPaths = async () => {
 	    endPoint: 's3.embl.de',
 	    port: 443,
 	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-	    accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
-	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
+	    accessKey: AWS_ACCESS_KEY_ID, // in env.local
+	    secretKey: AWS_SECRET_ACCESS_KEY
 	});
 
     var miniObjects = minioClient.listObjects('evocell', 'outputs',  true)
@@ -101,8 +101,8 @@ export const getStaticProps = async (context) => {
 	    endPoint: 's3.embl.de',
 	    port: 443,
 	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-	    accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
-	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
+	    accessKey: AWS_ACCESS_KEY_ID, // in env.local
+	    secretKey: AWS_SECRET_ACCESS_KEY
 	});
 
 
@@ -166,6 +166,7 @@ export const getStaticProps = async (context) => {
 
     const  metaDataTop = (metaData, top, second) => {
         // Outputs metaData.second if there is no metaData.top
+        // Used for example to show a biorxiv link only if there is no published paper link
 
         if(metaData[top] === ""){
             var text = metaData[second]

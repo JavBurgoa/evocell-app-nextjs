@@ -205,8 +205,8 @@ export async function getStaticProps() {
 	    endPoint: 's3.embl.de',
 	    port: 443,
 	    useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-	    accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
-	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
+	    accessKey: AWS_ACCESS_KEY_ID, // in env.local
+	    secretKey: AWS_SECRET_ACCESS_KEY
 	});
 
 	//###################
