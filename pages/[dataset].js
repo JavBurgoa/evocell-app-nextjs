@@ -22,7 +22,7 @@ export const getStaticPaths = async () => {
     // Fetch info
     console.log("!!!!!!!!!!!!!!!!! ACCESS KEY !!!!!!!!!!!!!!!!!!")
     const AWS = process.env.AWS_ACCESS_KEY_ID
-    console.log(`AWS: ${AWS}`);
+    console.log(AWS);
 
     var minioClient = new Minio.Client({
 	    endPoint: 's3.embl.de',
