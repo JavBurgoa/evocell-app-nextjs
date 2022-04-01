@@ -20,10 +20,6 @@ export const getStaticPaths = async () => {
 
 
     // Fetch info
-    console.log("!!!!!!!!!!!!!!!!! ACCESS KEY !!!!!!!!!!!!!!!!!!")
-    const AWS = process.env.AWS_ACCESS_KEY_ID
-    console.log(AWS);
-
     var minioClient = new Minio.Client({
 	    endPoint: 's3.embl.de',
 	    port: 443,
@@ -99,8 +95,6 @@ export const getStaticProps = async (context) => {
 	//#####################
 	//#### CONNECT MINIO
 	//#####################
-    console.log("!!!!!!!!!!!!!!!!! ACCESS KEY !!!!!!!!!!!!!!!!!!")
-    console.log(AWS_ACCESS_KEY_ID)
 
 	// Instantiate the minio client with the endpoint and access keys as shown below.
 	var minioClient = new Minio.Client({

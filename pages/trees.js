@@ -201,9 +201,6 @@ export async function getStaticProps() {
 	//#### CONNECT MINIO
 	//#####################
 	// Instantiate the minio client with the endpoint and access keys as shown below.
-    console.log("!!!!!!!!!!!!!!!!! ACCESS KEY !!!!!!!!!!!!!!!!!!")
-    console.log($AWS_ACCESS_KEY_ID)
-
 	var minioClient = new Minio.Client({
 	    endPoint: 's3.embl.de',
 	    port: 443,
