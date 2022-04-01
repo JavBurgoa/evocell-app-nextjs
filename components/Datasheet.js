@@ -1,3 +1,5 @@
+// not used at the moment. I don't think it would be usefulto add this as compoennt in index. i think it's good as it is now
+/*
 import fs from 'fs';
 
 const Datasheet = ({ data }) => {
@@ -58,3 +60,4 @@ export async function getStaticProps() {
   	  props: {data}
   }
 };
+*/
