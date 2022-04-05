@@ -11,9 +11,9 @@ buildpages:
   stage: buildpages
   artifacts:
     paths:
-      - ./
+      - "*"
     exclude:
-      - ./.env
+      - ".env"
     expire_in: 1 day
   script:
     - echo "AWS_ACCESS_KEY_ID"=$AWS_ACCESS_KEY_ID  >> ".env"
