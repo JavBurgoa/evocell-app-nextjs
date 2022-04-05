@@ -10,7 +10,7 @@ buildpages:
   image: node:lts-gallium
   stage: buildpages
   artifacts:
-    path:
+    paths:
       - ./
     expire_in: 1 day
   script:
