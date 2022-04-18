@@ -1,3 +1,6 @@
+style.iframe_div{
+    position:relative
+}
 .UCSCiframe{
     top:170px;
     width:50%;
@@ -13,9 +16,9 @@
 .dataset_btn_div{
     position:absolute;
     height:27px;
-    width:340px;
+    width:280px;
     top:100px;
-    right:1.8%;
+    right:2%;
     text-decoration:none;
     font-family: 'ABeeZee', sans-serif;
 }
@@ -23,6 +26,7 @@
 .dataset_btn_div button {
     padding: 15px 25px;
     border: unset;
+    width: 65%;
     border-radius: 15px;
     color: white;
     z-index: 1;
@@ -37,24 +41,12 @@
 
 
 .dataset_btn_div a{
+    top:13px;
     position:relative;
-    width:100%;
-    color:white;
-    outline: none;
-    padding: 15px 25px;
-    border: unset;
-    border-radius: 15px;
     color: white;
     z-index: 1;
-    background: #18b0cc;
-    font-weight: 1000;
-    font-size: 17px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     transition: all 250ms;
     overflow: hidden;
-    font-size: x-large;
-    text-decoration: none;
-
 }
 
 .dataset_btn_div button::before {
@@ -77,10 +69,8 @@
     cursor: pointer;
 }
 
-.dataset_btn_div a:hover {
-    color: #e8e8e8;
-    cursor: pointer;
-    background-color: black;
+.dataset_btn_div img:hover {
+    filter: blur(1px);
 }
    
 .dataset_btn_div button:hover::before {
@@ -93,9 +83,12 @@
 }
 
 .UCSC_btn{
-    margin-left:20px;
+    margin-left: 40px;
 }
 
+.UCSC_btn:hover{
+    fill:red;
+}
 
 /*Switchable tab styles*/
 .tabs{

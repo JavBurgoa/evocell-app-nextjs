@@ -201,3 +201,16 @@ nav a:hover{
     background-color: white;
     color:black;
  }
+
+.active_arrow{
+    font-size: 40px;
+    position: absolute;
+    left: 10px;
+    top:0;
+    height:100px;
+    vertical-align: center;
+}
+
+.inactive_arrow{
+    display: none
+}

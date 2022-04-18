@@ -86,7 +86,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
 		//load ete. If you load it from the beginning it says (cannot load bevcuase zoom = 0)
 		const eteDefault = document.getElementById("eteDefault");
-		eteDefault.src = "http://127.0.0.1:5000/static/gui.html?tree=7868753" // This url should come from static props
+		eteDefault.src = "https://phylocloud-ziqi.compgenomics.org/headless/tree_page/61b9bdef3947c122665b8252/" // This url should come from static props
 
 	}
 
@@ -268,7 +268,6 @@ export async function getStaticProps() {
 		}
 	}
 	var treesPerGene = JSON.stringify(treesPerGene)
-	console.log(treesPerGene)
 
 
 

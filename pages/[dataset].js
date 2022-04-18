@@ -155,7 +155,7 @@ export const getStaticProps = async (context) => {
         // applied to a button it collapses whatever DOM element by id
 
         var panel = document.getElementById(id)
-        console.log(panel.style.display)
+
         if (panel.style.display === "block"){
                 panel.style.display = "none"
             } 
@@ -191,9 +191,6 @@ export const getStaticProps = async (context) => {
             const activeButton = document.getElementById("data_tab_" + id.toString())
             const activeContent = document.getElementById("data_content_" + id.toString())
 
-            console.log("aaaaaaaaaa!!!!!!!!!!")
-            console.log(activeContent)
-            
             activeButton.className = style.tab_btn
             activeContent.className = style.tab_content
         })
@@ -245,7 +242,7 @@ async function getH5AD (data){
     })
   
   }
-  
+//UCSC &#x1F517;
 
 // Actual HTML
 const Details = ({metaData}) =>{
@@ -254,14 +251,27 @@ const Details = ({metaData}) =>{
         
         <div>
             <div>
-                <div className={style.dataset_btn_div}>
-                    <button className={style.download_btn} onClick={()=>getH5AD({'Species':'Capitella_teleta_Stage4'})}>Download</button>            
-                    <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
-                        UCSC &#x1F517;
-                    </a>
+                <div className={style.iframe_div} >
                     
+                    <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+                    
+                    <div className={style.dataset_btn_div}>
+                        <button className={style.download_btn} onClick={()=>getH5AD({'Species':'Capitella_teleta_Stage4'})}>Download</button>            
+                        <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
+                            <Image
+                                src="/expand-svgrepo-com.svg"
+                                alt="logo"
+                                width="40"
+                                height="40"
+                            />
+                        </a>
+                    </div>
+
                 </div>
-                <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+                
+                
+                    
+                
             </div>
 
             
