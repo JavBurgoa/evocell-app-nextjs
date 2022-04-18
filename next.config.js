@@ -9,4 +9,6 @@
 //module.exports = {
 //    staticPageGenerationTimeout: 2000,
 //  };
-     
+module.exports = {
+  basePath: '/evocelldb',
+}     
