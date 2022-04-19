@@ -1,6 +1,7 @@
 var Minio = require('minio');
 import style from "../styles/[dataset].module.css"
 import Image from "next/image"
+import axios from "axios";
 
 export const getStaticPaths = async () => {
     // Function to make arrays out of Streams (I don't know how to getStaticProps() export streams)
@@ -210,38 +211,41 @@ const download = () =>{
     return(DownloadLink)
 }
 
-// POST request for h5ad downloading
+    // POST request for h5ad downloading
 async function postData(url = '', data = {}) {
     // This function is th one actually making the post request. 
     // However it goes inside an async function thadds a .then() after this function
     // Otherwise it won't work by itself
     const response = await fetch(url, {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
         'Content-Type': 'application/json'
-      },
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      body: JSON.stringify(data)
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
     });
     const json = await response.json();
     return json
-  }
+    }
+      
+      // send POST request and then go to the link the URL generator sends you back
+    async function getURL (data){
+        
+    }
   
   // send POST request and .then(do whatever)
 async function getH5AD (data){
-      //This is the actual function that goes into the html
-
-      postData('http://localhost:3001/', data)
+    postData('http://localhost:55331/', data)
     .then(res => {
-        alert(res.body)
-          //window.location.href = res.body
-    })
+            alert(res.body)
+              //window.location.href = res.body
+        })
   
-  }
+   }
 //UCSC &#x1F517;
 
 // Actual HTML
@@ -256,10 +260,10 @@ const Details = ({metaData}) =>{
                     <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
                     
                     <div className={style.dataset_btn_div}>
-                        <button className={style.download_btn} onClick={()=>getH5AD({'Species':'Capitella_teleta_Stage4'})}>Download</button>            
+                        <button className={style.download_btn} onClick={()=>getH5AD({'species':'Mus_musculus', 'identifier':'1_1'})}>Download</button>            
                         <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
                             <Image
-                                src="/expand-svgrepo-com.svg"
+                                src="/public/expand-svgrepo-com.svg"
                                 alt="logo"
                                 width="40"
                                 height="40"

@@ -11,4 +11,5 @@
 //  };
 module.exports = {
   basePath: '/evocelldb',
-}     
+  staticPageGenerationTimeout: 1000
+}    

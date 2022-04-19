@@ -232,7 +232,7 @@ export async function getStaticProps() {
 
 	// Get newicks from Minio and take only the gene names per newick file
 	var newicks = []
-	for(var tr in trees[1,2,3,4,5,6,7,8,9]){ //(var tr in trees). Change to use less trees
+	for(var tr in trees[1]){ //(var tr in trees). Change to use less trees
 		var dat = await getNewick('evocell', "Trees/" + trees[tr])
 		var dat = dat.toUpperCase();
 		var dat = dat.split(/[\(\),\:]+/)
@@ -262,7 +262,7 @@ export async function getStaticProps() {
 				
 			}else{ // if the gen already has a tree then push the new tree there in .value
 				// haven't tested it:
-				treesPerGene[gene].push(tree)
+				treesPerGene[gene] = treesPerGene[gene].push(tree)
 			
 			}
 		}
@@ -271,10 +271,72 @@ export async function getStaticProps() {
 
 
 
+    //################
+    //##### multi keys trial
 
+    function expand(obj) {
+        var keys = Object.keys(obj);
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i],
+                subkeys = key.split(/,\s?/),
+                target = obj[key];
+            delete obj[key];
+            subkeys.forEach(function(key) { obj[key] = target; })
+        }
+        return obj;
+    }
 
+    function roughSizeOfObject( object ) {
 
+        var objectList = [];
+        var stack = [ object ];
+        var bytes = 0;
+    
+        while ( stack.length ) {
+            var value = stack.pop();
+    
+            if ( typeof value === 'boolean' ) {
+                bytes += 4;
+            }
+            else if ( typeof value === 'string' ) {
+                bytes += value.length * 2;
+            }
+            else if ( typeof value === 'number' ) {
+                bytes += 8;
+            }
+            else if
+            (
+                typeof value === 'object'
+                && objectList.indexOf( value ) === -1
+            )
+            {
+                objectList.push( value );
+    
+                for( var i in value ) {
+                    stack.push( value[ i ] );
+                }
+            }
+        }
+        return bytes;
+    }
+    
+    
+    var holidays = expand({
+        "geneA, HumanOrthA": "tree1",
+        "geneB, HumanOrthB": "tree2"
 
+    });
+
+    var holidays2 = {
+        "tree1":["geneA", "HumanOrthA"],
+        "tree2":["geneB", "HumanOrthB"]
+    };
+
+    console.log(holidays.geneA)
+    console.log(holidays.HumanOrthA)
+    console.log(holidays.HumanOrthB)
+    console.log(roughSizeOfObject(holidays))
+    console.log(roughSizeOfObject(holidays2))
 	//###################
 	//###### MAKE CUSTOM ETE IFRAME
 	//###################
