@@ -140,6 +140,13 @@ export const getStaticProps = async (context) => {
 
     // Finally get the data from minio using the correct path
 	var metaData = await getJSON('evocell', jsonPath)
+
+    // add identifier to the dictionary
+    const identifier = jsonPath.split("/")[2]
+    metaData["identifier"] = identifier
+
+
+
     console.log(metaData)
             return {
                 props: {metaData}
@@ -206,50 +213,41 @@ export const getStaticProps = async (context) => {
         tabContent.className = style.tab_content_active // content        
     }
 
-const download = () =>{
 
-    return(DownloadLink)
-}
-
-    // POST request for h5ad downloading
-async function postData(url = '', data = {}) {
-    // This function is th one actually making the post request. 
-    // However it goes inside an async function thadds a .then() after this function
-    // Otherwise it won't work by itself
-    const response = await fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data)
-    });
-    const json = await response.json();
-    return json
-    }
-      
-      // send POST request and then go to the link the URL generator sends you back
-    async function getURL (data){
-        
-    }
-  
-  // send POST request and .then(do whatever)
-async function getH5AD (data){
-    postData('http://localhost:55331/', data)
-    .then(res => {
-            alert(res.body)
-              //window.location.href = res.body
-        })
-  
-   }
-//UCSC &#x1F517;
 
 // Actual HTML
 const Details = ({metaData}) =>{
+
+    async function postData(url = '', data = {}) {
+    
+        const response = await fetch(url, {
+            method: 'POST',
+            cache: 'no-cache',
+            mode:"cors",
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(data)
+        });
+        console.log(JSON.stringify(data))
+        const json = await response.json();
+        return json
+     }
+          
+      async function getresponse (data){
+        postData('http://localhost:55331/', data)
+        .then(res => {
+                if(res.body === "NotFound"){
+                    alert("This dataset is not available. Please contact us for more information.")
+                }else{
+                    window.location.href=res.body;
+                }
+            })
+       }
+      
 
     return(
         
@@ -260,7 +258,7 @@ const Details = ({metaData}) =>{
                     <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
                     
                     <div className={style.dataset_btn_div}>
-                        <button className={style.download_btn} onClick={()=>getH5AD({'species':'Mus_musculus', 'identifier':'1_1'})}>Download</button>            
+                        <button className={style.download_btn} onClick={()=>getresponse({'species':metaData.custom.species.replace(" ", "_"), 'identifier':metaData.identifier})}>Download</button>            
                         <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
                             <Image
                                 src="/public/expand-svgrepo-com.svg"

@@ -51,7 +51,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
 				var elementOfList = document.createElement("button")
 				elementOfList.className = "elementOfTreeList"
-				elementOfList.innerHTML = data[selcGene]
+				elementOfList.innerHTML = data[selcGene][i]
 				elementOfList.addEventListener("click", openETE)
 				list.appendChild(elementOfList)
 
@@ -194,6 +194,27 @@ export async function getStaticProps() {
 	    })
 	}
 
+    //################
+    //##### multi keys trial
+    // Create a dictionary with multiple keys per value (from stackoverflow)
+    function expand(obj) {
+        var keys = Object.keys(obj);
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i],
+                subkeys = key.split(/,\s?/),
+                target = obj[key];
+            delete obj[key];
+            subkeys.forEach(function(key) { obj[key] = target; })
+        }
+        return obj;
+    }
+    
+    
+    // var holidays = expand({
+    //     "geneA, HumanOrthA": "tree1",
+    //     "geneB, HumanOrthB": "tree2"
+
+    // });
 
 
 
@@ -215,128 +236,82 @@ export async function getStaticProps() {
 
 	// Get all species names
 	// list all objects in Stream format
-	var trees = minioClient.listObjects('evocell','Trees', true)
+	var trees = minioClient.listObjects('evocell','Annot_Trees', true)
 	var trees = await toArray(trees)
 	
 	var trees = trees.map(function(tree){
 		return tree.name.split('/')[1]
 	})
 
+    console.log(trees)
+
 
 	//###############################
 	//#### SEARCH TREES DICT
 	//###############################
 	// Create a dict with all the genes present in our trees, and make a dict like so:
-	//{gene1:{tree1,tree2,tree3},
-	//gene2:{tree45}}
+	//{gene1:[tree1,tree2,tree3],
+	// gene2:[tree4]}
 
-	// Get newicks from Minio and take only the gene names per newick file
+	// Get newicks from Minio and make a dictionary like: {tree1:[gene1, orth1, orth1, orth1, gene2], tree2:[orth1, ...]} with duplicates
 	var newicks = []
-	for(var tr in trees[1]){ //(var tr in trees). Change to use less trees
-		var dat = await getNewick('evocell', "Trees/" + trees[tr])
+	for(var tr in trees){ //(var tr in trees). Change to use less trees
+        console.log(trees[tr])
+		var dat = await getNewick('evocell', "Annot_Trees/" + trees[tr])
 		var dat = dat.toUpperCase();
-		var dat = dat.split(/[\(\),\:]+/)
-		var dat = dat.filter(element => element.match(/[a-zA-Z]+/)) // Take only genes (they have at least one letter)
-		var treename = trees[tr].replace(".faa.aln.nw", "")
-		var treename = trees[tr].replace(".aln.nw", "") 
+        
+        var dat = dat.replaceAll(/[\(\)\[\]\']/g, "") // erase parenthesis, brackets and quotes
+        var dat = dat.replaceAll("&&NHX:", ",")
+        var dat = dat.replaceAll(":HUMAN_ORTH=", ",")
+        
+        var dat = dat.split(/,/)
+        var dat = dat.filter(element => !/SPECIES/.test(element)) // Take only genes or ortholosg, not SPECIES (ERASE!!)
+
+        // Tree names fromatting
+		var treename = trees[tr].replace(".faa", "")
+		var treename = treename.replaceAll("_UCSC", "")
+		var treename = treename.replace(".aln.nw", "")
+
+        // Make dict
 		newicks.push({
 	    	key: treename,
 	    	value: dat
 		});
 	}
 
-
-	// switch tree:genes dict to gene:trees
+	// // switch tree:genes dict to gene:trees
 	var treesPerGene = {};
 	for(var idx in newicks){
 
 		var tree = newicks[idx].key
 
-		for(var gene in newicks[idx].value){
+		for(var element in newicks[idx].value){
 			
-			var gene = newicks[idx].value[gene]
+			var key = newicks[idx].value[element]
 
-			if(treesPerGene[gene] === undefined){ // if the gene key is not in the dictionary, put somtthing there
+			if(treesPerGene[key] === undefined){ // if the gene key is not in the dictionary, put somtthing there
 				
-				treesPerGene[gene] = [tree]
+				treesPerGene[key] = [tree]
 				
-			}else{ // if the gen already has a tree then push the new tree there in .value
-				// haven't tested it:
-				treesPerGene[gene] = treesPerGene[gene].push(tree)
-			
-			}
-		}
-	}
+			}else if(!treesPerGene[key].includes(tree)){// if the gen already has a tree and it's not the same tree then push the new tree there in .value
+                console.log(key)
+                console.log(tree)
+                treesPerGene[key].push(tree)
+                console.log(treesPerGene[key])
+
+		    }
+	    }
+    }
 	var treesPerGene = JSON.stringify(treesPerGene)
 
-
-
-    //################
-    //##### multi keys trial
-
-    function expand(obj) {
-        var keys = Object.keys(obj);
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i],
-                subkeys = key.split(/,\s?/),
-                target = obj[key];
-            delete obj[key];
-            subkeys.forEach(function(key) { obj[key] = target; })
-        }
-        return obj;
-    }
-
-    function roughSizeOfObject( object ) {
-
-        var objectList = [];
-        var stack = [ object ];
-        var bytes = 0;
-    
-        while ( stack.length ) {
-            var value = stack.pop();
-    
-            if ( typeof value === 'boolean' ) {
-                bytes += 4;
-            }
-            else if ( typeof value === 'string' ) {
-                bytes += value.length * 2;
-            }
-            else if ( typeof value === 'number' ) {
-                bytes += 8;
-            }
-            else if
-            (
-                typeof value === 'object'
-                && objectList.indexOf( value ) === -1
-            )
-            {
-                objectList.push( value );
-    
-                for( var i in value ) {
-                    stack.push( value[ i ] );
-                }
-            }
-        }
-        return bytes;
-    }
     
     
-    var holidays = expand({
-        "geneA, HumanOrthA": "tree1",
-        "geneB, HumanOrthB": "tree2"
+    //console.log(treesPerGene)
+    //var treesPerGene = {}
 
-    });
 
-    var holidays2 = {
-        "tree1":["geneA", "HumanOrthA"],
-        "tree2":["geneB", "HumanOrthB"]
-    };
 
-    console.log(holidays.geneA)
-    console.log(holidays.HumanOrthA)
-    console.log(holidays.HumanOrthB)
-    console.log(roughSizeOfObject(holidays))
-    console.log(roughSizeOfObject(holidays2))
+
 	//###################
 	//###### MAKE CUSTOM ETE IFRAME
 	//###################
@@ -346,7 +321,6 @@ export async function getStaticProps() {
 	var name = "randomtree";
 	var newick = "(A,B,(C,D));";
 	var ete_url = `${eteUrl}/static/gui.html?tree=${tid}`
-
 
 	const data = {
 	    newick: '(A);',
