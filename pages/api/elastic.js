@@ -29,7 +29,7 @@ export async function connectToElasticsearch() {
         index: 'game-of-thrones',
         body: {
             query: {
-                match: { quote: 'winter' }
+                match: { quote: req.body }
               }
         }
       })

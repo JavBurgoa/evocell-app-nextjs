@@ -136,7 +136,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 	////////////////////////////////////// <scripts> //////////////////////////////////
     
     async function postData(url = '', datos = {}) {
-    
         const response = await fetch(url, {
             method: 'POST',
             body: datos
@@ -146,14 +145,20 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
      }
           
       async function sendElasticReq (){
-        postData('api/elastic')
+        // Get what the user inputted
+        const input = document.getElementById("elasticSearch");
+    	var selcGene = input.value.toUpperCase();
+        let query = {"query": selcGene}
+
+        // send input to api
+        postData('api/elastic', selcGene)
         .then(res => {
             if(res.status == 200) {
                 console.log("Success :" + res.statusText);   //works just fine
             }
 
             return res.json()
-        }).then(bod => {console.log(bod)})
+        }).then(bod => {console.log(bod)}) //
        }
 
 	return (
@@ -167,8 +172,9 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
 		</div>
 
-        <button onClick={sendElasticReq}>Elastic</button>
 
+        <input type="text" id="elasticSearch" placeholder="Gene in Phylome" title="Type in a gene" onChange={sendElasticReq}></input>
+		<button onClick={sendElasticReq}>Elastic</button>
 
 		<div id="div_ete" className={style.div_ete}>
 			<iframe onLoad={(e) => iframeListen()} className={style.ete4frame} title="ete4" id = "eteDefault">
