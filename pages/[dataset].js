@@ -147,7 +147,7 @@ export const getStaticProps = async (context) => {
 
 
 
-    console.log(metaData)
+
             return {
                 props: {metaData}
             }

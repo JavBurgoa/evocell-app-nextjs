@@ -1,14 +1,19 @@
 import style from "../styles/Trees.module.css"
+import { Client } from '@elastic/elasticsearch'
+import { useEffect, useState, useCallback } from "react";
 import Image from 'next/image'
 var Minio = require('minio');
 import {FormData} from "formdata-node" // installd from npm install fromata-node
 const https = require('https')
 const axios = require('axios')
+import path from 'path'
+
+////////// ELASTIC IS FANTASTIC
 
 
 const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
-
-	////////////////////////////////////// <scripts> //////////////////////////////////
+    
+	/////////////////////////////////// <scripts> //////////////////////////////////
 	/* Make this onload somehow
 	function enterKey(){
 		const input = document.getElementById("searchBar");
@@ -43,7 +48,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
     	
     	
     	removeAllChildNodes(list)
-
     	// Create an entry per tree
     	if(data[selcGene] !== undefined){
 
@@ -130,6 +134,27 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
 
 	////////////////////////////////////// <scripts> //////////////////////////////////
+    
+    async function postData(url = '', datos = {}) {
+    
+        const response = await fetch(url, {
+            method: 'POST',
+            body: datos
+        });
+        const json = await response;
+        return json
+     }
+          
+      async function sendElasticReq (){
+        postData('api/elastic')
+        .then(res => {
+            if(res.status == 200) {
+                console.log("Success :" + res.statusText);   //works just fine
+            }
+
+            return res.json()
+        }).then(bod => {console.log(bod)})
+       }
 
 	return (
 		<>
@@ -141,6 +166,8 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 			<ul id="treesList"></ul>
 
 		</div>
+
+        <button onClick={sendElasticReq}>Elastic</button>
 
 
 		<div id="div_ete" className={style.div_ete}>
@@ -155,7 +182,115 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 }
 // Connection to Minio
 export async function getStaticProps() {
+    async function connectToElasticsearch() {
+        if (
+          !process.env.ESS_CLOUD_ID ||
+          !process.env.ESS_CLOUD_USERNAME ||
+          !process.env.ESS_CLOUD_PASSWORD
+        ) {
+          return 'ERR_ENV_NOT_DEFINED'
+        }
+        return new Client({
+          cloud: {
+            id: process.env.ESS_CLOUD_ID,
+          },
+          auth: {
+            username: process.env.ESS_CLOUD_USERNAME,
+            password: process.env.ESS_CLOUD_PASSWORD,
+          },
+        })
+      }
+    const client = await connectToElasticsearch()
 
+    // check if connection worked
+    //client.info().then(response => console.log(response)).catch(error => console.error(error))
+
+    async function run() {
+        await client.index({
+          index: 'game-of-thrones',
+          body: {
+            character: 'Ned Stark',
+          quote: 'Winter is coming.'
+          }
+        })
+      
+        await client.index({
+          index: 'game-of-thrones',
+          body: {
+            character: 'Daenerys Targaryen',
+          quote: 'I am the blood of the dragon.'
+          }
+        })
+      
+        await client.index({
+          index: 'game-of-thrones',
+          body: {
+            character: 'Tyrion Lannister',
+          quote: 'A mind needs books like a sword needs whetstone.'
+          }
+        })
+      
+        await client.indices.refresh({index: 'game-of-thrones'})
+      }
+      
+    //run().catch(console.log)
+
+    async function read() {
+        const body = await client.search({
+          index: 'game-of-thrones',
+          body: {
+            query: {
+              match: { quote: 'winter' }
+            }
+          }
+        })
+        console.log(body.hits)
+      }
+      
+      read().catch(console.log)
+    // async function run () {
+    //     // Let's start by indexing some data
+    //     await client.index({
+    //       index: 'game-of-thrones',
+    //       document: {
+    //         character: 'Ned Stark',
+    //         quote: 'Winter is coming.'
+    //       }
+    //     })
+      
+    //     await client.index({
+    //       index: 'game-of-thrones',
+    //       document: {
+    //         character: 'Daenerys Targaryen',
+    //         quote: 'I am the blood of the dragon.'
+    //       }
+    //     })
+      
+    //     await client.index({
+    //       index: 'game-of-thrones',
+    //       document: {
+    //         character: 'Tyrion Lannister',
+    //         quote: 'A mind needs books like a sword needs a whetstone.'
+    //       }
+    //     })
+      
+    //     // here we are forcing an index refresh, otherwise we will not
+    //     // get any result in the consequent search
+    //     await client.indices.refresh({ index: 'game-of-thrones' })
+      
+    //     // Let's search!
+    //     const result= await client.search({
+    //       index: 'game-of-thrones',
+    //       query: {
+    //         match: { quote: 'winter' }
+    //       }
+    //     })
+      
+    //     console.log(result.hits.hits)
+    //   }
+      
+    // run().catch(console.log)
+    
 	// Minio
 	//##############################################################################################################//
 	//##############################################################################################################/
@@ -194,28 +329,21 @@ export async function getStaticProps() {
 	    })
 	}
 
-    //################
-    //##### multi keys trial
-    // Create a dictionary with multiple keys per value (from stackoverflow)
-    function expand(obj) {
-        var keys = Object.keys(obj);
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i],
-                subkeys = key.split(/,\s?/),
-                target = obj[key];
-            delete obj[key];
-            subkeys.forEach(function(key) { obj[key] = target; })
-        }
-        return obj;
-    }
-    
-    
-    // var holidays = expand({
-    //     "geneA, HumanOrthA": "tree1",
-    //     "geneB, HumanOrthB": "tree2"
-
-    // });
-
+    function getDict(client, bucket, name) {
+        const buf = []
+        return new Promise((resolve, reject) => {
+            client.getObject(bucket, name, (err, stream) => {
+                if(err){
+                    return reject(err)
+                }
+                stream.on("data", (chunk) => buf.push(chunk))
+                stream.on("end", () => {
+                    resolve(buf.toString("ASCII"))
+                })
+            })
+            
+        })
+    } 
 
 
 	//#####################
@@ -230,20 +358,21 @@ export async function getStaticProps() {
 	    secretKey: process.env.AWS_SECRET_ACCESS_KEY
 	});
 
+
+    
 	//###################
 	//###### GET DATA
 	//###################
 
 	// Get all species names
 	// list all objects in Stream format
-	var trees = minioClient.listObjects('evocell','Annot_Trees', true)
+	var trees = minioClient.listObjects('evocell','annotated_trees', true)
 	var trees = await toArray(trees)
 	
 	var trees = trees.map(function(tree){
 		return tree.name.split('/')[1]
 	})
 
-    console.log(trees)
 
 
 	//###############################
@@ -255,21 +384,19 @@ export async function getStaticProps() {
 
 	// Get newicks from Minio and make a dictionary like: {tree1:[gene1, orth1, orth1, orth1, gene2], tree2:[orth1, ...]} with duplicates
 	var newicks = []
-	for(var tr in trees){ //(var tr in trees). Change to use less trees
-        console.log(trees[tr])
-		var dat = await getNewick('evocell', "Annot_Trees/" + trees[tr])
+	for(var tr in trees[2]){ //(var tr in trees). Change to use less trees
+		var dat = await getNewick('evocell', "annotated_trees/" + trees[tr])
 		var dat = dat.toUpperCase();
         
         var dat = dat.replaceAll(/[\(\)\[\]\']/g, "") // erase parenthesis, brackets and quotes
-        var dat = dat.replaceAll("&&NHX:", ",")
-        var dat = dat.replaceAll(":HUMAN_ORTH=", ",")
+        var dat = dat.replaceAll("&&NHX:HUMAN_ORTH=", ",")
+        var dat = dat.replaceAll("|", ",")
         
         var dat = dat.split(/,/)
-        var dat = dat.filter(element => !/SPECIES/.test(element)) // Take only genes or ortholosg, not SPECIES (ERASE!!)
 
         // Tree names fromatting
 		var treename = trees[tr].replace(".faa", "")
-		var treename = treename.replaceAll("_UCSC", "")
+		var treename = treename.replaceAll(".ucsc.", "")
 		var treename = treename.replace(".aln.nw", "")
 
         // Make dict
@@ -294,10 +421,9 @@ export async function getStaticProps() {
 				treesPerGene[key] = [tree]
 				
 			}else if(!treesPerGene[key].includes(tree)){// if the gen already has a tree and it's not the same tree then push the new tree there in .value
-                console.log(key)
-                console.log(tree)
+
                 treesPerGene[key].push(tree)
-                console.log(treesPerGene[key])
+
 
 		    }
 	    }
@@ -306,10 +432,11 @@ export async function getStaticProps() {
 
     
     
-    //console.log(treesPerGene)
-    //var treesPerGene = {}
-
-
+    // var treesPerGene = await getDict(minioClient, "evocell", "searchDict30K.JSON")
+    // console.log(treesPerGene)
+    // console.log("let's start parsing !!!!!!!!!!!!!!!!")
+    // treesPerGene = JSON.parse(treesPerGene)
+    // treesPerGene = JSON.stringify(treesPerGene)
 
 
 	//###################
@@ -431,7 +558,7 @@ export async function getStaticProps() {
 	
 
 	return {
-  	  props: {trees, ete_url, newicks, treesPerGene}
+  	  props: {ete_url, treesPerGene}
   }
 };
 
