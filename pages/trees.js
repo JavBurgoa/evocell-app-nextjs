@@ -153,7 +153,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         
         // Firt remove all the previous search
         removeAllChilds(predList)
-
+        
         // Add the new search
         array.forEach(function(element) {
             let listElement = document.createElement('li');
@@ -163,7 +163,11 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         })
     }
 
-    async function sendElasticReq (){
+    async function sendElasticReq (field="gene"){
+    //Attribute
+    //--------
+    // field: Whether you want to retrieve trees or genes after searching a word. "gene" or "trees"
+    
     // Get what the user inputted
     const input = document.getElementById("elasticSearch");
     var selcGene = input.value.toUpperCase();
@@ -176,7 +180,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
             console.log("Success :" + res.statusText);   //works just fine
         }
         return res.json()
-    }).then(bod => {console.log(bod)})
+    }).then(bod => {updateList(bod)})
     }
 
 	return (

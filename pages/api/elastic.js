@@ -28,15 +28,15 @@ export async function connectToElasticsearch() {
       const body = await client.search({
         index: 'trees',
         body: {
-            query: {
-                match: { quote: req.body }
-              }
+            "query": {
+                "query_string" : {"default_field" : "gene", "query" : req.body}
+            }
         }
       })
 
       let hits = body.hits.hits
       hits.forEach((item) => {
-        results.push(item._source.character)
+        results.push(item._source.gene)
       })
       return res.send(results)
     } catch (error) {

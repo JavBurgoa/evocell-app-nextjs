@@ -60,22 +60,34 @@ function getFile(bucket, name) {
 	    })
 }
 
-async function searchElastic(client, search, idx){
+
+const convertPythonDictToJSON = function (data) {
+    let d = data.replace(new RegExp(`(?<=[a-zA-Z])'(?=[a-zA-Z ])`, "g"), '__')
+    d = d.replace(new RegExp("'", 'g'), '"')
+    d = d.replace(new RegExp("__", 'g'), "'")
+    d = d.replace(new RegExp("None", 'g'), 'null')
+    d = d.replace(new RegExp("False", 'g'), 'false')
+    d = d.replace(new RegExp("True", 'g'), 'true')
+    return JSON.parse(d)
+}
+
+async function searchElastic(client, search, idx, field){
 const body = await client.search({
     index: idx,
     body: {
-        query: {
-            match: { "gene": search }
-          }
+        "query": {
+            "query_string" : {"default_field" : "gene", "query" : search}
+        }
     }
   })
 
   let hits = body.hits.hits
   let results =[]
   hits.forEach((item) => {
-    results.push(item._source.character)
+    results.push(item._source.gene)
   })
   return results
+  //return body.hits.hits
 }
 // ##### Make clients ##### //
 
@@ -103,16 +115,19 @@ var ElastiClient = new elastic.Client({
 // ##### Update Elasticsearch ##### //
 
 // Get dictionary
-let TreesGenes = getFile("evocell", "sample_searchDict.JSON")
+let TreesGenes = getFile("evocell", "searchDict30K.JSON")
 TreesGenes.then((e) => {
-   let treesgenes= JSON.parse(e)
+
+    
+   //let treesgenes = convertPythonDictToJSON(e)
+   let treesgenes = JSON.parse(e)
    //deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
    //createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
    countDocuments(ElastiClient).catch((e) => console.log(e))
 })
 
-searchElastic(ElastiClient, "AA", "trees").then((e) => console.log(e))
-
+searchElastic(client=ElastiClient, search="6526.TR21018_C0_G1_I1.P1", idx="trees").then((e) => console.log(e))
+//searchElastic(client=ElastiClient, search="Ned", idx="game").then((e) => console.log(e))
 // console.log(client.indices)
 // // Update Elasticsearch
 //
