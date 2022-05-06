@@ -26,7 +26,7 @@ export async function connectToElasticsearch() {
       let results = []
       console.log("searching elastic")
       const body = await client.search({
-        index: 'game-of-thrones',
+        index: 'trees',
         body: {
             query: {
                 match: { quote: req.body }

@@ -1,5 +1,5 @@
 import style from "../styles/Trees.module.css"
-import { Client } from '@elastic/elasticsearch'
+//import { Client } from '@elastic/elasticsearch'
 import { useEffect, useState, useCallback } from "react";
 import Image from 'next/image'
 var Minio = require('minio');
@@ -99,10 +99,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		// It adds an event listener that is triggered every time chorme recieves a message from the igrame, this is every time you make an action on the iframe.
 		
 		window.addEventListener('message', handler);
-		
-		
-
-
 	}
 
 	function handler() {
@@ -143,38 +139,60 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         const json = await response;
         return json
      }
-          
-      async function sendElasticReq (){
-        // Get what the user inputted
-        const input = document.getElementById("elasticSearch");
-    	var selcGene = input.value.toUpperCase();
-        let query = {"query": selcGene}
+    
 
-        // send input to api
-        postData('api/elastic', selcGene)
-        .then(res => {
-            if(res.status == 200) {
-                console.log("Success :" + res.statusText);   //works just fine
-            }
 
-            return res.json()
-        }).then(bod => {console.log(bod)}) //
-       }
+    function removeAllChilds(parent) {
+        while (parent.firstChild) {
+            parent.removeChild(parent.firstChild);
+        }
+    }
+
+    function updateList(array){
+        let predList = document.getElementById("predictionList")
+        
+        // Firt remove all the previous search
+        removeAllChilds(predList)
+
+        // Add the new search
+        array.forEach(function(element) {
+            let listElement = document.createElement('li');
+            listElement.innerHTML = element
+
+            predList.appendChild(listElement)
+        })
+    }
+
+    async function sendElasticReq (){
+    // Get what the user inputted
+    const input = document.getElementById("elasticSearch");
+    var selcGene = input.value.toUpperCase();
+    let query = {"query": selcGene}
+
+    // send input to api
+    postData('api/elastic', selcGene)
+    .then(res => {
+        if(res.status == 200) {
+            console.log("Success :" + res.statusText);   //works just fine
+        }
+        return res.json()
+    }).then(bod => {console.log(bod)})
+    }
 
 	return (
 		<>
 		<div id="search">
 			<h1>Search gene</h1>
-			<input type="text" id="searchBar" placeholder="Gene in Phylome" title="Type in a gene">
-			</input>
-			<button id="searchButton" onClick={(e) => searchTrees()}>Search</button>
-			<ul id="treesList"></ul>
-
+            <input type="text" id="searchBar" placeholder="Gene in Phylome" title="Type in a gene">
+            </input>
+            <button id="searchButton" onClick={(e) => searchTrees()}>Search</button>
 		</div>
 
-
-        <input type="text" id="elasticSearch" placeholder="Gene in Phylome" title="Type in a gene" onChange={sendElasticReq}></input>
-		<button onClick={sendElasticReq}>Elastic</button>
+        <div className={style.searchWrapper}>
+            <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={sendElasticReq}></input>
+            <button onClick={sendElasticReq}>Elastic</button>
+            <ul id="predictionList"></ul>
+        </div>
 
 		<div id="div_ete" className={style.div_ete}>
 			<iframe onLoad={(e) => iframeListen()} className={style.ete4frame} title="ete4" id = "eteDefault">
@@ -186,116 +204,93 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		</>
 		)
 }
+
 // Connection to Minio
 export async function getStaticProps() {
-    async function connectToElasticsearch() {
-        if (
-          !process.env.ESS_CLOUD_ID ||
-          !process.env.ESS_CLOUD_USERNAME ||
-          !process.env.ESS_CLOUD_PASSWORD
-        ) {
-          return 'ERR_ENV_NOT_DEFINED'
-        }
-        return new Client({
-          cloud: {
-            id: process.env.ESS_CLOUD_ID,
-          },
-          auth: {
-            username: process.env.ESS_CLOUD_USERNAME,
-            password: process.env.ESS_CLOUD_PASSWORD,
-          },
-        })
-      }
-    const client = await connectToElasticsearch()
-
-    // check if connection worked
-    //client.info().then(response => console.log(response)).catch(error => console.error(error))
-
-    async function run() {
-        await client.index({
-          index: 'game-of-thrones',
-          body: {
-            character: 'Ned Stark',
-          quote: 'Winter is coming.'
-          }
-        })
-      
-        await client.index({
-          index: 'game-of-thrones',
-          body: {
-            character: 'Daenerys Targaryen',
-          quote: 'I am the blood of the dragon.'
-          }
-        })
-      
-        await client.index({
-          index: 'game-of-thrones',
-          body: {
-            character: 'Tyrion Lannister',
-          quote: 'A mind needs books like a sword needs whetstone.'
-          }
-        })
-      
-        await client.indices.refresh({index: 'game-of-thrones'})
-      }
-      
-    //run().catch(console.log)
-
-    async function read() {
-        const body = await client.search({
-          index: 'game-of-thrones',
-          body: {
-            query: {
-              match: { quote: 'winter' }
-            }
-          }
-        })
-        console.log(body.hits)
-      }
-      
-      read().catch(console.log)
-    // async function run () {
-    //     // Let's start by indexing some data
-    //     await client.index({
-    //       index: 'game-of-thrones',
-    //       document: {
-    //         character: 'Ned Stark',
-    //         quote: 'Winter is coming.'
-    //       }
+    // async function connectToElasticsearch() {
+    //     if (
+    //       !process.env.ESS_CLOUD_ID ||
+    //       !process.env.ESS_CLOUD_USERNAME ||
+    //       !process.env.ESS_CLOUD_PASSWORD
+    //     ) {
+    //       return 'ERR_ENV_NOT_DEFINED'
+    //     }
+    //     return new Client({
+    //       cloud: {
+    //         id: process.env.ESS_CLOUD_ID,
+    //       },
+    //       auth: {
+    //         username: process.env.ESS_CLOUD_USERNAME,
+    //         password: process.env.ESS_CLOUD_PASSWORD,
+    //       },
     //     })
-      
-    //     await client.index({
-    //       index: 'game-of-thrones',
-    //       document: {
-    //         character: 'Daenerys Targaryen',
-    //         quote: 'I am the blood of the dragon.'
-    //       }
-    //     })
-      
-    //     await client.index({
-    //       index: 'game-of-thrones',
-    //       document: {
-    //         character: 'Tyrion Lannister',
-    //         quote: 'A mind needs books like a sword needs a whetstone.'
-    //       }
-    //     })
-      
-    //     // here we are forcing an index refresh, otherwise we will not
-    //     // get any result in the consequent search
-    //     await client.indices.refresh({ index: 'game-of-thrones' })
-      
-    //     // Let's search!
-    //     const result= await client.search({
-    //       index: 'game-of-thrones',
-    //       query: {
-    //         match: { quote: 'winter' }
-    //       }
-    //     })
-      
-    //     console.log(result.hits.hits)
     //   }
+    // const client = await connectToElasticsearch()
+
+    // // check if connection worked
+    // //client.info().then(response => console.log(response)).catch(error => console.error(error))
+
+    // async function createIndex(idx) {
+ 
+
+    //     await client.index({
+    //       index: idx,
+    //       body: {
+    //         character: 'Ned Stark',
+    //       quote: 'Winter is coming.'
+    //       }
+    //     })
       
-    // run().catch(console.log)
+    //     await client.index({
+    //       index: idx,
+    //       body: {
+    //         character: 'Daenerys Targaryen',
+    //       quote: 'I am the blood of the dragon.'
+    //       }
+    //     })
+      
+    //     await client.index({
+    //       index: idx,
+    //       body: {
+    //         character: 'Tyrion Lannister',
+    //       quote: 'A mind needs books like a sword needs whetstone.'
+    //       }
+    //     })
+      
+    //     await client.indices.refresh({index: idx})
+    //   }
+    
+    // async function deleteIndex(idx){
+    //     await client.indices.delete({
+    //         index: idx
+    //       })
+    // }
+
+    // async function countDocuments(){
+    //     let count = await client.cat.indices()
+    //     console.log(count)
+    // }
+    
+    // async function read() {
+    //     const body = await client.search({
+    //       index: 'game-of-thrones',
+    //       body: {
+    //         query: {
+    //           match: { quote: 'winter' }
+    //         }
+    //       }
+    //     })
+    //     //console.log(body.hits)
+    // }
+    
+    // deleteIndex("game-of-thrones").catch((e) => console.log(e))
+    // createIndex("game-of-thrones").catch((e) => console.log(e))
+    // countDocuments().catch((e) => console.log(e))
+    // //read().catch(console.log)
+    
+
+
+    
     
 	// Minio
 	//##############################################################################################################//
@@ -335,21 +330,21 @@ export async function getStaticProps() {
 	    })
 	}
 
-    function getDict(client, bucket, name) {
-        const buf = []
-        return new Promise((resolve, reject) => {
-            client.getObject(bucket, name, (err, stream) => {
-                if(err){
-                    return reject(err)
-                }
-                stream.on("data", (chunk) => buf.push(chunk))
-                stream.on("end", () => {
-                    resolve(buf.toString("ASCII"))
-                })
-            })
+    // function getDict(client, bucket, name) {
+    //     const buf = []
+    //     return new Promise((resolve, reject) => {
+    //         client.getObject(bucket, name, (err, stream) => {
+    //             if(err){
+    //                 return reject(err)
+    //             }
+    //             stream.on("data", (chunk) => buf.push(chunk))
+    //             stream.on("end", () => {
+    //                 resolve(buf.toString("ASCII"))
+    //             })
+    //         })
             
-        })
-    } 
+    //     })
+    // } 
 
 
 	//#####################
