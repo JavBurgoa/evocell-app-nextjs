@@ -1,25 +1,15 @@
 var Minio = require('minio');
 
-export async function connectToMinio(){
-    if (
-        !process.env.AWS_ACCESS_KEY_ID ||
-        !process.env.AWS_SECRET_ACCESS_KEY
-      ) {
-          return 'ERR_ENV_NOT_DEFINED'
-    }
+// ############## Config
+export const config = {
+    api: {
+      bodyParser: {
+        sizeLimit: '1kb',
+      },
+    },
+  }
 
-    // If env defined:
-    return new Minio.Client({
-        endPoint: 's3.embl.de',
-        port: 443,
-        useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-        accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
-        secretKey: process.env.AWS_SECRET_ACCESS_KEY
-    });    
-}
-
-
-
+// ############ Functions
 export async function toArray (stream) {
     const array = [];
         try {
@@ -34,10 +24,9 @@ export async function toArray (stream) {
         return array;
 };
 
-// Define function to get all objects from the minio outputs/ folder
+// // Define function to get all objects from the minio outputs/ folder
 export async function getAllObjects(bucket, folder, minioClient){
     // this function retrieves all objects paths in a given bucket and folder
-
     var miniObjects = minioClient.listObjects(bucket, folder,  true)
     var miniObjects = await toArray(miniObjects)
 
@@ -69,7 +58,7 @@ export function chooseH5AD(miniObjects, species, identifier){
         potentialPath.shift() //erase first element ("/outputs/")
         potentialPath.pop() // erase last element ("/dataset_name.extension")
         potentialPath = potentialPath.join("/")
-        
+
         if(potentialPath === id){
             //Put in variable the path to the JSON in Minio
             var finalPath = miniObjects[j]
@@ -98,28 +87,34 @@ export function getH5AD_URLs(bucket, name, minioClient){
       
 }  
 
-//################ Final function #################//
-// Define function that gathers all previous functions and then gets URL and sends it back to the client that made the POST req	
-export async function asyncCall(req, res) {
-    let minioClient = connectToMinio()
+// //################ Final function (actually executed) #################//
+// // Define function that gathers all previous functions and then gets URL and sends it back to the client that made the POST req	
+export default async function asyncCall(req, res) {
+    
+    let minioClient = new Minio.Client({
+        endPoint: 's3.embl.de',
+        port: 443,
+        useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
+        accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
+        secretKey: process.env.AWS_SECRET_ACCESS_KEY
+    });
+
+    minioClient.listObjects("bucket"," folder",  true)
     var miniObjects = await getAllObjects("evocell", "outputs", minioClient)
     miniObjects = selectH5ADs(miniObjects)
-    finalPath = chooseH5AD(miniObjects, req.body.species, req.body.identifier)
-    
+
+    req = JSON.parse(req.body)
+    let finalPath = chooseH5AD(miniObjects, req.species, req.identifier)
     // Return url if the path exists, if not return a message
     if(finalPath === undefined){
         var result = "NotFound"
     }else{
-        var result = await getH5AD_URLs('evocell', finalPath);
+        var result = await getH5AD_URLs('evocell', finalPath, minioClient);
         result = result[0]
     }
-     
+
     res.json({
         status: 'success',
         body: result
     })
 }
-
-
-//################ Exectute when recieving a POST message #################//
-export default asyncCall();

@@ -222,14 +222,14 @@ const Details = ({metaData}) =>{
     
         const response = await fetch(url, {
             method: 'POST',
-            cache: 'no-cache',
-            mode:"cors",
-            credentials: 'same-origin',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
+            // cache: 'no-cache',
+            // mode:"cors",
+            // credentials: 'same-origin',
+            // headers: {
+            //   'Content-Type': 'application/json'
+            // },
+            // redirect: 'follow',
+            // referrerPolicy: 'no-referrer',
             body: JSON.stringify(data)
         });
         console.log(JSON.stringify(data))
@@ -238,7 +238,7 @@ const Details = ({metaData}) =>{
      }
           
       async function getresponse (data){
-        postData('http://localhost:55331/', data)
+        postData('api/minio', data)
         .then(res => {
                 if(res.body === "NotFound"){
                     alert("This dataset is not available. Please contact us for more information.")
