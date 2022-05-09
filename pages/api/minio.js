@@ -90,32 +90,31 @@ export function getH5AD_URLs(bucket, name, minioClient){
 // //################ Final function (actually executed) #################//
 // // Define function that gathers all previous functions and then gets URL and sends it back to the client that made the POST req	
 export default async function asyncCall(req, res) {
-    console.log(req)
-    console.log(process.env)
-    // let minioClient = new Minio.Client({
-    //     endPoint: 's3.embl.de',
-    //     port: 443,
-    //     useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
-    //     accessKey: process.env.AWS_ACCESS_KEY_ID, // in env.local
-    //     secretKey: process.env.AWS_SECRET_ACCESS_KEY
-    // });
 
-    // minioClient.listObjects("bucket"," folder",  true)
-    // var miniObjects = await getAllObjects("evocell", "outputs", minioClient)
-    // miniObjects = selectH5ADs(miniObjects)
+    let minioClient = new Minio.Client({
+        endPoint: 's3.embl.de',
+        port: 443,
+        useSSL: true, // enabled if using port 443, disabled if uing 80 (port 80 does not work with this embl instance)
+        accessKey: process.env.API_KEY, // in env.local
+        secretKey: process.env.API_SECRET
+    });
 
-    // req = JSON.parse(req.body)
-    // let finalPath = chooseH5AD(miniObjects, req.species, req.identifier)
-    // // Return url if the path exists, if not return a message
-    // if(finalPath === undefined){
-    //     var result = "NotFound"
-    // }else{
-    //     var result = await getH5AD_URLs('evocell', finalPath, minioClient);
-    //     result = result[0]
-    // }
+    //minioClient.listObjects("bucket"," folder",  true)
+    var miniObjects = await getAllObjects("evocell", "outputs", minioClient)
+    miniObjects = selectH5ADs(miniObjects)
+
+    req = JSON.parse(req.body)
+    let finalPath = chooseH5AD(miniObjects, req.species, req.identifier)
+    // Return url if the path exists, if not return a message
+    if(finalPath === undefined){
+        var result = "NotFound"
+    }else{
+        var result = await getH5AD_URLs('evocell', finalPath, minioClient);
+        result = result[0]
+    }
 
     res.json({
         status: 'success',
-        body: process.env
+        body: result
     })
 }
