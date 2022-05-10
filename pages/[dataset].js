@@ -1,7 +1,6 @@
 var Minio = require('minio');
 import style from "../styles/[dataset].module.css"
 import Image from "next/image"
-import axios from "axios";
 
 export const getStaticPaths = async () => {
     // Function to make arrays out of Streams (I don't know how to getStaticProps() export streams)
@@ -218,6 +217,9 @@ export const getStaticProps = async (context) => {
 // Actual HTML
 const Details = ({metaData}) =>{
 
+    // ##### Functions to connect to minio api (Sends message to minio api, 
+    // ##### this one get a download url and send it back to the app))
+
     async function postData(url = '', data = {}) {
     
         const response = await fetch(url, {
@@ -247,7 +249,58 @@ const Details = ({metaData}) =>{
                 }
             })
        }
-      
+    
+// const appendInfo = function(){
+//     if (typeof window === 'object') {
+//         // Check if document is finally loaded
+    
+//             var methodsTab = ["methods", ["custom","sequencing_method"]] 
+//             let dc1 = document.getElementById("data_content_1")
+    
+//             for(let j = 0; j < methodsTab.length; j++){
+                    
+//                     let p = document.createElement("p")
+    
+//                     if(methodsTab[j].length === 2){
+//                         // then the htm l is in metaData.custom.whatever
+//                         p.innerHTML=metaData[methodsTab[j][0]][methodsTab[j][1]]
+//                     }else{
+//                         p.innerHTML=metaData[methodsTab[j]]
+//                     }
+    
+//                     p.className=style.description
+//                     dc1.appendChild(p)
+//                     //
+//                     //console.log(metaData[methodsTab[j]])
+//                 }
+//         }
+// }
+
+
+    // // for(let j = 0; j < methodsTab.length; j++){
+        
+    // //     let p = document.createElement("p")
+
+    // //     if(methodsTab[j].length === 2){
+
+    // //         // then the htm l is in Metadata.custom.whatever
+    // //         p.innerHTML=metaData[methodsTab[j][0]][methodsTab[j][1]]
+
+    // //     }else{
+
+    // //         p.innerHTML=metaData[methodsTab[j]]
+
+    // //     }
+
+    // //     p.className=style.description
+    // //     dc1.appendChild(p)
+    // //     //console.log(metaData[methodsTab[j]])
+    // // }
+    
+    // let p = document.createElement("p")
+    // p.innerHTML=metaData.methods
+    // p.className=style.description
+    // dc1.appendChild(p)
 
     return(
         

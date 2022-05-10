@@ -1,6 +1,15 @@
 import { Client } from '@elastic/elasticsearch'
 
+// ############## Config
+export const config = {
+    api: {
+      bodyParser: {
+        sizeLimit: '1kb',
+      },
+    },
+  }
 
+//####### Funcitons
 export async function connectToElasticsearch() {
     if (
       !process.env.ESS_CLOUD_ID ||
@@ -20,27 +29,28 @@ export async function connectToElasticsearch() {
     })
   }
 
-  export default async function searchES(req, res) {
-    try {
-      const client = await connectToElasticsearch()
-      let results = []
-      console.log("searching elastic")
-      const body = await client.search({
-        index: 'trees',
-        body: {
-            "query": {
-                "query_string" : {"default_field" : "gene", "query" : req.body}
-            }
+// ####### Final function (will be exectued when recieving a POST)
+export default async function searchES(req, res) {
+try {
+    const client = await connectToElasticsearch()
+    let results = []
+    console.log("searching elastic")
+    const body = await client.search({
+    index: 'trees',
+    body: {
+        "query": {
+            "query_string" : {"default_field" : "gene", "query" : req.body}
         }
-      })
-
-      let hits = body.hits.hits
-      hits.forEach((item) => {
-        results.push(item._source.gene)
-      })
-      return res.send(results)
-    } catch (error) {
-      return res.status(error.statusCode || 500).json({ error: error.message })
     }
-  }
+    })
+
+    let hits = body.hits.hits
+    hits.forEach((item) => {
+    results.push(item._source.gene)
+    })
+    return res.send(results)
+} catch (error) {
+    return res.status(error.statusCode || 500).json({ error: error.message })
+}
+}
 
