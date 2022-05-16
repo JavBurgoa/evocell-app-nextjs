@@ -34,17 +34,17 @@ export default async function searchES(req, res) {
 try {
     const client = await connectToElasticsearch()
     let results = []
-    console.log("searching elastic")
     const body = await client.search({
     index: 'trees',
     body: {
-        "query": {
+        query: {
             "query_string" : {"default_field" : "gene", "query" : req.body}
         }
     }
     })
 
     let hits = body.hits.hits
+    console.log(body.hits)
     hits.forEach((item) => {
     results.push(item._source.gene)
     })

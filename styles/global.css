@@ -32,16 +32,10 @@ html,body{
 }
 
 
-.holder{
-    min-height: 100%;
-    position:relative;
-    padding-top: 100px;
-}
-
 .footer{
-    left: 48%;
+    text-align: center;
 	margin-top:30px;
-    position:absolute;
+    position:static;
     bottom:0px;
 }
 

@@ -1,12 +1,9 @@
 import style from "../styles/Trees.module.css"
 //import { Client } from '@elastic/elasticsearch'
-import { useEffect, useState, useCallback } from "react";
-import Image from 'next/image'
+//import Image from 'next/image'
 var Minio = require('minio');
-import {FormData} from "formdata-node" // installd from npm install fromata-node
-const https = require('https')
-const axios = require('axios')
-import path from 'path'
+//const https = require('https')
+//const axios = require('axios')
 
 ////////// ELASTIC IS FANTASTIC
 
@@ -139,7 +136,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         const json = await response;
         return json
      }
-    
 
 
     function removeAllChilds(parent) {
@@ -156,31 +152,40 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         
         // Add the new search
         array.forEach(function(element) {
+            
             let listElement = document.createElement('li');
             listElement.innerHTML = element
 
+            // When clicked on list, erase all elements and add the clicked one to the searchbar
+            listElement.addEventListener("click", function(){
+                
+                removeAllChilds(predList)
+                let searchBar = document.getElementById("elasticSearch")
+                searchBar.value = this.innerHTML
+
+            })
+            
             predList.appendChild(listElement)
         })
     }
 
-    async function sendElasticReq (field="gene"){
+    async function sendElasticReq (){
     //Attribute
     //--------
     // field: Whether you want to retrieve trees or genes after searching a word. "gene" or "trees"
     
     // Get what the user inputted
     const input = document.getElementById("elasticSearch");
-    var selcGene = input.value.toUpperCase();
-    let query = {"query": selcGene}
+    var inputGene = input.value.toUpperCase();
 
     // send input to api
-    postData('api/elastic', selcGene)
+    postData('api/elastic', inputGene)
     .then(res => {
         if(res.status == 200) {
             console.log("Success :" + res.statusText);   //works just fine
         }
         return res.json()
-    }).then(bod => {updateList(bod)})
+    }).then(bod => {updateList(bod, inputGene)})
     }
 
 	return (

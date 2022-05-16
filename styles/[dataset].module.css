@@ -1,6 +1,11 @@
 style.iframe_div{
     position:relative
 }
+
+.dataset_full_content{
+    position:absolute
+}
+
 .UCSCiframe{
     top:170px;
     width:50%;
@@ -70,7 +75,9 @@ style.iframe_div{
 }
 
 .dataset_btn_div img:hover {
-    filter: blur(1px);
+    filter:brightness(70);
+    background-color:rgb(143, 143, 143);
+    
 }
    
 .dataset_btn_div button:hover::before {

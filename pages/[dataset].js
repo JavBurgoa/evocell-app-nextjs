@@ -1,5 +1,6 @@
 var Minio = require('minio');
 import style from "../styles/[dataset].module.css"
+import Markdown from 'react-markdown'
 import Image from "next/image"
 
 export const getStaticPaths = async () => {
@@ -224,14 +225,6 @@ const Details = ({metaData}) =>{
     
         const response = await fetch(url, {
             method: 'POST',
-            // cache: 'no-cache',
-            // mode:"cors",
-            // credentials: 'same-origin',
-            // headers: {
-            //   'Content-Type': 'application/json'
-            // },
-            // redirect: 'follow',
-            // referrerPolicy: 'no-referrer',
             body: JSON.stringify(data)
         });
         console.log(JSON.stringify(data))
@@ -301,20 +294,39 @@ const Details = ({metaData}) =>{
     // p.innerHTML=metaData.methods
     // p.className=style.description
     // dc1.appendChild(p)
+    // let aa = parse("<p>aaaa</p>", "text/html")
+    // console.log(aa.firstChild)
+    // console.log("AAAAAAAAAAAAAAAA")
+    // const addAccordion = () => {
+    //     return(
+    //             parse("<p>aaaa</p>")
+    //     )
+    // }
 
+    // const htmltext = function(){
+    //     return
+    // }
+
+    const markdown = `## _The Last Markdown Editor, Ever_`;
+    console.log("!!!!!!!!!!!!")
+    console.log(<Markdown>
+        # Header
+      
+        * dotted lists
+        * [url](/doc)
+      </Markdown>)
     return(
         
-        <div>
-            <div>
-                <div className={style.iframe_div} >
+        <div id="dataset_full_content">
+                <div className={style.iframe_div}>
                     
-                    <iframe src="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem" className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
+                    <iframe src={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id} className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
                     
                     <div className={style.dataset_btn_div}>
                         <button className={style.download_btn} onClick={()=>getresponse({'species':metaData.custom.species.replace(" ", "_"), 'identifier':metaData.identifier})}>Download</button>            
-                        <a className={style.UCSC_btn} href="https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem">
-                            <Image
-                                src="/public/expand-svgrepo-com.svg"
+                        <a className={style.UCSC_btn} href={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id}>
+                            <img
+                                src="expand-svgrepo-com.svg"
                                 alt="logo"
                                 width="40"
                                 height="40"
@@ -323,11 +335,7 @@ const Details = ({metaData}) =>{
                     </div>
 
                 </div>
-                
-                
-                    
-                
-            </div>
+            
 
             
 
@@ -340,28 +348,28 @@ const Details = ({metaData}) =>{
                 </div>
                 <div className={style.content}>
                     <div className={style.tab_content_active} id = "data_content_1">
-                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")}>{metaData.title}</a></p>
-                        <p className={style.description}><span>Abstract: </span> <br></br> {metaData.abstract}</p>
-                        <p className={style.description}><span>Doi: </span> {metaData.doi}</p>
-                        <p className={style.description}><span>Author&apos;s institution: </span> {metaData.institution}</p>
-                        <p className={style.description}><span>Author: </span> {metaData.author}</p>
-                        <p className={style.description}><span>Lab: </span> {metaData.lab}</p>
+                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")}><Markdown>{metaData.title}</Markdown></a></p>
+                        <p className={style.description}><span>Abstract: </span> <br></br> <Markdown>{metaData.abstract}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**doi:** " + metaData.doi}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Author&apos;s institution:** " + metaData.institution}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Author:** " + metaData.author}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Lab:** " + metaData.lab}</Markdown></p>
                     </div>
                     <div className={style.tab_content} id = "data_content_2">
-                        <p className={style.description}><span>Methods summary: </span><br></br>{metaData.methods}</p>
-                        <p className={style.description}><span>Sequencing: </span>{metaData.custom.sequencing_method}</p>
-                        <p className={style.description}><span>Genome: </span>{metaData.custom.genome}</p>
-                        <p className={style.description}><span>Transcriptome: </span>{metaData.custom.transcriptome}</p>
-                        <p className={style.description}><span>Notes: </span>{metaData.custom.notes}</p>
+                        <p className={style.description}><span>Methods summary: </span><br></br><Markdown>{metaData.methods}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Sequencing:** " + metaData.custom.sequencing_method}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Genome:** " + metaData.custom.genome}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Transciptome:** " + metaData.custom.transcriptome}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Notes:** " + metaData.custom.notes}</Markdown></p>
                     </div>
                     <div className={style.tab_content} id = "data_content_3">
-                        <p className={style.description}><span>Ontogenic stage: </span>{metaData.custom.ontogenic_stage}</p>
-                        <p className={style.description}><span>Tissue: </span>{metaData.custom.tissue_type}</p>
-                        <p className={style.description}><span>Number of cells: </span>{metaData.custom.number_of_cells}</p>
-                        <p className={style.description}><span>GEO: </span>{metaData.geo_series}</p>
-                        <p className={style.description}><span>SRA: </span>{metaData.sra_study}</p>
-                        <p className={style.description}><span>Specialised resources: </span>{metaData.custom.more_specialised_resources}</p>
-                        <p className={style.description}><span>Submitter: </span>{metaData.submitter}</p>
+                        <p className={style.description}><Markdown>{"**Ontogenic stage:** " + metaData.custom.ontogenic_stage}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Tissue:** " + metaData.custom.tissue_type}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Number of cells:** " + metaData.custom.number_of_cells}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**GEO:** " + metaData.geo_series}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**SRA:** " + metaData.sra_study}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Specialised resources:** " + metaData.custom.more_specialised_resources}</Markdown></p>
+                        <p className={style.description}><Markdown>{"**Submitter:** " + metaData.submitter}</Markdown></p>
                     </div>
                 </div>
 
