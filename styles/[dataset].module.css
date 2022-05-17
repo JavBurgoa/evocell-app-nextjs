@@ -11,7 +11,7 @@ style.iframe_div{
 }
 
 .iframe_div{
-    height: 950px;
+    height: 90vh;
     left:50px;
     width: 51%;
     position:static;
