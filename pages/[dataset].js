@@ -243,85 +243,15 @@ const Details = ({metaData}) =>{
             })
        }
     
-// const appendInfo = function(){
-//     if (typeof window === 'object') {
-//         // Check if document is finally loaded
-    
-//             var methodsTab = ["methods", ["custom","sequencing_method"]] 
-//             let dc1 = document.getElementById("data_content_1")
-    
-//             for(let j = 0; j < methodsTab.length; j++){
-                    
-//                     let p = document.createElement("p")
-    
-//                     if(methodsTab[j].length === 2){
-//                         // then the htm l is in metaData.custom.whatever
-//                         p.innerHTML=metaData[methodsTab[j][0]][methodsTab[j][1]]
-//                     }else{
-//                         p.innerHTML=metaData[methodsTab[j]]
-//                     }
-    
-//                     p.className=style.description
-//                     dc1.appendChild(p)
-//                     //
-//                     //console.log(metaData[methodsTab[j]])
-//                 }
-//         }
-// }
 
-
-    // // for(let j = 0; j < methodsTab.length; j++){
-        
-    // //     let p = document.createElement("p")
-
-    // //     if(methodsTab[j].length === 2){
-
-    // //         // then the htm l is in Metadata.custom.whatever
-    // //         p.innerHTML=metaData[methodsTab[j][0]][methodsTab[j][1]]
-
-    // //     }else{
-
-    // //         p.innerHTML=metaData[methodsTab[j]]
-
-    // //     }
-
-    // //     p.className=style.description
-    // //     dc1.appendChild(p)
-    // //     //console.log(metaData[methodsTab[j]])
-    // // }
-    
-    // let p = document.createElement("p")
-    // p.innerHTML=metaData.methods
-    // p.className=style.description
-    // dc1.appendChild(p)
-    // let aa = parse("<p>aaaa</p>", "text/html")
-    // console.log(aa.firstChild)
-    // console.log("AAAAAAAAAAAAAAAA")
-    // const addAccordion = () => {
-    //     return(
-    //             parse("<p>aaaa</p>")
-    //     )
-    // }
-
-    // const htmltext = function(){
-    //     return
-    // }
-
-    const markdown = `## _The Last Markdown Editor, Ever_`;
-    console.log("!!!!!!!!!!!!")
-    console.log(<Markdown>
-        # Header
-      
-        * dotted lists
-        * [url](/doc)
-      </Markdown>)
+       
     return(
         
         <div id="dataset_full_content">
+
                 <div className={style.iframe_div}>
                     
                     <iframe src={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id} className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
-                    
                     <div className={style.dataset_btn_div}>
                         <button className={style.download_btn} onClick={()=>getresponse({'species':metaData.custom.species.replace(" ", "_"), 'identifier':metaData.identifier})}>Download</button>            
                         <a className={style.UCSC_btn} href={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id}>
@@ -348,7 +278,7 @@ const Details = ({metaData}) =>{
                 </div>
                 <div className={style.content}>
                     <div className={style.tab_content_active} id = "data_content_1">
-                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")}><Markdown>{metaData.title}</Markdown></a></p>
+                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")}>{metaData.title}</a></p>
                         <p className={style.description}><span>Abstract: </span> <br></br> <Markdown>{metaData.abstract}</Markdown></p>
                         <p className={style.description}><Markdown>{"**doi:** " + metaData.doi}</Markdown></p>
                         <p className={style.description}><Markdown>{"**Author&apos;s institution:** " + metaData.institution}</Markdown></p>

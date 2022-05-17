@@ -1,7 +1,8 @@
 const Footer = () => {
 	return(
             <div className="footer">
-                <p>Copyright 2021</p>
+                <hr></hr>
+                <p>©2022 EvoCELL / Contact / Terms of Service / Privacy Policy</p>
             </div>
 		)
 }

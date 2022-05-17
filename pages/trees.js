@@ -202,7 +202,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
             <button onClick={sendElasticReq}>Elastic</button>
             <ul id="predictionList"></ul>
         </div>
-
+        <h1>This page is not ready. Thank you for your understanding</h1>
 		<div id="div_ete" className={style.div_ete}>
 			<iframe onLoad={(e) => iframeListen()} className={style.ete4frame} title="ete4" id = "eteDefault">
 			</iframe>
