@@ -200,13 +200,17 @@ style.iframe_div{
 
 
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1300px) {
     .iframe_div {
-      width: 100%; /* The width is 100%, when the viewport is 800px or smaller (for phones) */
-      height: 150vh;
+      width: 95%; /* The width is 100%, when the viewport is 800px or smaller (for phones) */
+      height: 120vh;
+      margin-left: 2.5%;
+      margin-bottom: 10vh
     }
     .tabs{
-        width: 100%;
+        width: 97%;
         float: left;
+        margin-bottom: 10vh
+        
     }
   }
