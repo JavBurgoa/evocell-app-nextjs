@@ -63,7 +63,7 @@ const Home = ({ metaData }) => {
                                                     <td key = {col} className={col + "_td"}>{formatText (array[col])}</td>) }
 
                                                     <td className = "buttonContainer">
-                                                        <button onClick={(e) => alert("Explore")}>
+                                                        <button>
                                                            &#128065; 
                                                         </button>
                                                     

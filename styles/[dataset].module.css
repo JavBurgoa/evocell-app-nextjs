@@ -13,11 +13,12 @@ style.iframe_div{
 .iframe_div{
     height: 90vh;
     left:50px;
-    width: 51%;
+    width: 62vw;
     position:static;
     display:inline-block;
 
 }
+
 
 .UCSCiframe{
     /*top:170px;*/
@@ -199,3 +200,13 @@ style.iframe_div{
 
 
 
+@media screen and (max-width: 1000px) {
+    .iframe_div {
+      width: 100%; /* The width is 100%, when the viewport is 800px or smaller (for phones) */
+      height: 150vh;
+    }
+    .tabs{
+        width: 100%;
+        float: left;
+    }
+  }
