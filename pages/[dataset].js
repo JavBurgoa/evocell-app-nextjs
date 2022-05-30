@@ -242,8 +242,8 @@ const Details = ({metaData}) =>{
             })
        }
     
-    const marc = "<a href='http://example.com/' target='_blank'>Hello, world!</a>"
-    var thisIsMyCopy = "<a href='http://example.com/' target='_blank'>Hello, world!</a>";
+    const marc = "<a href='http://example.com/' target='_blank' rel='noreferrer'>Hello, world!</a>"
+    var thisIsMyCopy = "<a href='http://example.com/' target='_blank' rel='noreferrer'>Hello, world!</a>";
 
 
     return(
@@ -255,7 +255,7 @@ const Details = ({metaData}) =>{
                     <iframe src={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id} className={style.UCSCiframe} title="UCSC Cell Browser" alt = "UCSC Cell Browser"></iframe>
                     <div className={style.dataset_btn_div}>
                         <button className={style.download_btn} onClick={()=>getresponse({'species':metaData.custom.species.replace(" ", "_"), 'identifier':metaData.identifier})}>Download</button>            
-                        <a className={style.UCSC_btn} target='_blank' href={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id}>
+                        <a className={style.UCSC_btn} target='_blank' rel='noreferrer' href={"https://cells-test.gi.ucsc.edu/?ds=evocell+" + metaData.custom.ucsc_id}>
                             <img
                                 src="expand-svgrepo-com.svg"
                                 alt="logo"
@@ -279,7 +279,7 @@ const Details = ({metaData}) =>{
                 </div>
                 <div className={style.content}>
                     <div className={style.tab_content_active} id = "data_content_1">
-                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")} target = '_blank'>{metaData.title}</a></p>
+                        <p className={style.description}><span>Title: </span><a href = {metaDataTop(metaData, "paper_url", "biorxiv_url")} target = '_blank' rel='noreferrer'>{metaData.title}</a></p>
                         <p className={style.description}><span>Abstract: </span> <br></br> <Markdown>{metaData.abstract}</Markdown></p>
                         <Markdown className={style.description}>{"**doi:** " + metaData.doi}</Markdown>
                         <Markdown className={style.description}>{"**Author&apos;s institution:** " + metaData.institution}</Markdown>
