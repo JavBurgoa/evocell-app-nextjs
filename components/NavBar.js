@@ -8,6 +8,7 @@ const NavBar = () => {
 		<nav>
 			<Link href = '/'><a className={(router.pathname == "/"|| router.pathname == "/[dataset]") ? "active_nav":"inactive_nav"}><span className={router.pathname == "/[dataset]" ? "active_arrow":"inactive_arrow"}>&#8678;</span>Datasets</a></Link>
 			<Link href = '/trees'><a  className={router.pathname == "/trees" ? "active_nav":"inactive_nav"}>Trees</a></Link>
+            <Link href = '/help'><a  className={router.pathname == "/help" ? "active_nav":"inactive_nav"}>Help</a></Link>
 		</nav>
 		);
 }

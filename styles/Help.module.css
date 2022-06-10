@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arimo&display=swap');
+
+
+.help_div{
+    width:90%;
+    margin-left:5%;
+    margin-top:2%
+}
+.accordion_help{
+    height:80px;
+    width:100%;
+    left:1000px;
+    vertical-align:middle;
+    column-span: all;
+    font-size: 1.3vw;
+    font-weight: bold;
+    font-style: italic;
+    cursor: pointer;
+    border:#000000;
+    padding: 7px 15px;
+    margin-top:4vh;
+    text-align: left;
+    color:rgb(0, 0, 0);
+}
+
+.accordion_help:hover:active{
+    background-color: #7a8c95;
+    content: '-'
+}
+
+.accordion_help:hover{
+    background-color: #c0d2db;
+}
+
+.accordion_help:after {
+    content: '+'; /* Unicode character for "plus" sign (+) */
+    font-size: 25px;
+    color: rgb(225, 225, 225);
+    float: right;
+    padding-left: 0px;
+    padding-right:5.7%;
+    margin-left:0px;
+
+  }
+
+.panel {
+    z-index: -1;
+    top:-0.5vh;
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+    border-style: solid;
+    border-width:2px;
+    border-color:hsl(206, 7%, 79%);
+    position: relative;
+
+}
+.panel p{
+    font-family: 'ABeeZee', sans-serif;
+    font-size:1vw;
+    text-align: justify;
+    margin-left:2%;
+    margin-right:5%;
+}
+
+.panel img{
+  margin-left: 25%;
+  margin-right: 25%;
+  margin-bottom: 2vw;
+  margin-top: 2vw;
+  width: 50%;
+}
