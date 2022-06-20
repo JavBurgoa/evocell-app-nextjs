@@ -1,4 +1,5 @@
 import { Client } from '@elastic/elasticsearch'
+var fs = require("fs")
 
 // ############## Config
 export const config = {
@@ -12,43 +13,98 @@ export const config = {
 //####### Funcitons
 export async function connectToElasticsearch() {
     if (
-      !process.env.ESS_CLOUD_ID ||
-      !process.env.ESS_CLOUD_USERNAME ||
-      !process.env.ESS_CLOUD_PASSWORD
+      !process.env.ESS_USERNAME ||
+      !process.env.ESS_PASSWORD
     ) {
       return 'ERR_ENV_NOT_DEFINED'
     }
     return new Client({
-      cloud: {
-        id: process.env.ESS_CLOUD_ID,
-      },
-      auth: {
-        username: process.env.ESS_CLOUD_USERNAME,
-        password: process.env.ESS_CLOUD_PASSWORD,
-      },
+        node: process.env.ESS_URL,
+        auth: {
+          username: process.env.ESS_USERNAME,
+          password: process.env.ESS_PASSWORD || "changeme",
+        },
+        tls: {
+            ca: fs.readFileSync('./ca.pem'),
+            rejectUnauthorized: false
+          }, // ssl desn't work somehow
     })
   }
+
+
+export async function ElasticSearch(client, gene, retrieveField){
+    // Searches a string in the elasticserch cluster. ou can choose to search with an exact or substring pattern.
+
+    // Attributes
+    // ---------
+    // client: Elasticsearch client logged in
+    // gene: String. whatever you want to search in the elasticsearchi index
+    // retrieveField. String, "gene" or "trees". If gene then the search will include substring search, otherwise it will be a exact search
+    if(retrieveField ==  "trees"){
+        // Exact search
+        var body = {
+            "query": {
+                "bool": {
+                    "must": [{
+                        "term": {"gene.keyword": gene}
+                    }]
+                }
+            },
+        }
+    }else if(retrieveField ==  "gene"){
+        
+        // Only do wildcard if search has enough length
+        if(gene.length > 2){
+            gene = "*" + gene + "*"
+        }
+
+        var body = {
+            query: {
+                "query_string" : {"default_field" : "gene", 
+                                  "query" : gene,
+                                  "analyzer": "default"}
+            }
+        }
+        // Search with substrings
+        
+    }
+
+
+    // Search
+    var result = await client.search({
+        index: 'trees',
+        body: body
+    })
+
+    return(result)
+
+}
+
 
 // ####### Final function (will be exectued when recieving a POST)
 export default async function searchES(req, res) {
 try {
     const client = await connectToElasticsearch()
+
+    // get hther you want to retrieve genes or trees
+    var req = req.body.split("__")
+    var gene = req[0]
+    var retrieveField = req[1]
+
+    // search in genes
+    const body = await ElasticSearch(client, gene, retrieveField)
+    console.log(body.hits.hits)
+    
+    // Retrieve gene or its correspondent tree
+    let hits = body.hits.hits
     let results = []
-    const body = await client.search({
-    index: 'trees',
-    body: {
-        query: {
-            "query_string" : {"default_field" : "gene", "query" : req.body}
-        }
-    }
+
+    hits.forEach((item) => {
+        results.push(item._source[retrieveField]) // retrieve gene or trees
     })
 
-    let hits = body.hits.hits
-    console.log(body.hits)
-    hits.forEach((item) => {
-    results.push(item._source.gene)
-    })
     return res.send(results)
+    
 } catch (error) {
     return res.status(error.statusCode || 500).json({ error: error.message })
 }

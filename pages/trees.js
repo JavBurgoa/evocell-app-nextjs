@@ -169,24 +169,36 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         })
     }
 
-    async function sendElasticReq (){
-    //Attribute
-    //--------
-    // field: Whether you want to retrieve trees or genes after searching a word. "gene" or "trees"
-    
-    // Get what the user inputted
-    const input = document.getElementById("elasticSearch");
-    var inputGene = input.value.toUpperCase();
-
-    // send input to api
-    postData('api/elastic', inputGene)
-    .then(res => {
-        if(res.status == 200) {
-            console.log("Success :" + res.statusText);   //works just fine
-        }
-        return res.json()
-    }).then(bod => {updateList(bod, inputGene)})
+    async function sendElasticReq (retrieveField){
+        //Attribute
+        //--------
+        // field: Whether you want to retrieve trees or genes after searching a word. "gene" or "trees"
+        
+        // Get what the user inputted
+        const input = document.getElementById("elasticSearch");
+        var inputGene = input.value.toUpperCase();
+        var req = inputGene + "__" + retrieveField
+        
+        // send input to api
+        postData('api/elastic', req)
+        .then(res => {
+            if(res.status == 200) {
+                console.log("Success :" + res.statusText);   //works just fine
+            }
+            return res.json()
+        }).then(
+                
+            bod => {
+                if(retrieveField == "gene"){
+                    updateList(bod, inputGene)
+                }else if(retrieveField == "trees"){
+                    alert("Trees that contain the searched gene:" + bod)
+                }
+            }
+        )
     }
+
+
 
 	return (
 		<>
@@ -198,8 +210,8 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		</div>
 
         <div className={style.searchWrapper}>
-            <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={sendElasticReq}></input>
-            <button onClick={sendElasticReq}>Elastic</button>
+            <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={() => sendElasticReq("gene")}></input>
+            <button onClick={() => sendElasticReq("trees")}>Elastic</button>
             <ul id="predictionList"></ul>
         </div>
         <h1>This page is not ready. Thank you for your understanding</h1>
