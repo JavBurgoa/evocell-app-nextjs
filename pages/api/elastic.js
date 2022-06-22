@@ -54,6 +54,7 @@ export async function ElasticSearch(client, gene, retrieveField){
     }else if(retrieveField ==  "gene"){
         
         // Only do wildcard if search has enough length
+        
         if(gene.length > 2){
             gene = "*" + gene + "*"
         }
@@ -93,7 +94,7 @@ try {
 
     // search in genes
     const body = await ElasticSearch(client, gene, retrieveField)
-    console.log(body.hits.hits)
+    //console.log(body.hits.hits)
     
     // Retrieve gene or its correspondent tree
     let hits = body.hits.hits
@@ -103,6 +104,11 @@ try {
         results.push(item._source[retrieveField]) // retrieve gene or trees
     })
 
+    // For trees, pseparate them
+    if(retrieveField == "trees"){
+        console.log(results)
+        results = results[0].split("|")
+    }
     return res.send(results)
     
 } catch (error) {

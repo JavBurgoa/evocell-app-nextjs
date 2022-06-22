@@ -9,6 +9,7 @@ const fs = require('fs');
 async function createIndex(dictio, idx, client) {
     //Add a new index to a elasticsearch client
     for (var key in dictio){
+        
         var value = dictio[key];
         console.log("value: " + value)
         console.log("key: " + key)
@@ -61,7 +62,7 @@ function getFile(bucket, name) {
 	            }
 	            stream.on('data', (chunk) => buf.push(chunk))
 	            stream.on('end', () => {
-	                resolve(buf.toString('ASCII'))
+	                resolve(buf.toString("ASCII"))
 	            })
 	        })
 	    })
@@ -126,17 +127,29 @@ var ElastiClient = new elastic.Client({
 
 
 // ##### Update Elasticsearch ##### //
+let treesgenes = fs.readFileSync('searchDict.JSON');
+treesgenes = JSON.parse(treesgenes);
+deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
+createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
+//countDocuments(ElastiClient).catch((e) => console.log(e))
 
-//Get dictionary
-let TreesGenes = getFile("evocell", "searchDict30K.JSON")
-TreesGenes.then((e) => {
-   let treesgenes = JSON.parse(e)
-   //deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
-   createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
+
+
+
+// ####### SANDBOX ######
+//Get Dictionary from Minio instead of local file (Reading from a buffer leads to itroduction of artifacts fro some reason.)
+//let TreesGenes = getFile("evocell", "searchDict.JSON")
+//TreesGenes.then((e) => {
+    //let treesgenes = e
+    //treesgenes = treesgenes.replace( /,\"/g, '"' ).replace( /,,/g, ',' ).replace(/:,/g, ',').replace(//g, "");
+    //JSON.parse(treesgenes)
+    //treesgenes = JSON.parse(treesgenes)
+    //deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
+   //createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
    //countDocuments(ElastiClient).catch((e) => console.log(e))
-})
+//})
 
-
+// #### sandbox on making searches ####
 
 // searchElastic(client=ElastiClient, search="\"6359\"", idx="trees").then((e) => {
 //     console.log(e);
@@ -148,10 +161,6 @@ TreesGenes.then((e) => {
 //     "analyzer" : "whitespace",
 //     "text" : "6359.DN217718_C1_G2_I1.P1"
 //   }).then((e) => console.log(e)))
-
-
-
-// Update Elasticsearch
 
 //createIndex({"Vamoave3":"peroestoquedes3"}, "a", ElastiClient).catch((e) => console.log(e))
 //deleteIndex("a", ElastiClient).catch((e) => console.log(e))

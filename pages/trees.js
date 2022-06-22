@@ -144,9 +144,13 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         }
     }
 
-    function updateList(array){
-        let predList = document.getElementById("predictionList")
-        
+    function updateList(array, ROMelement){
+        // array: array
+        //      Array full of strings. All of them will be attached to a list
+        // element: string,
+        //      ID of the list to which the elements in the array will be added
+        let predList = document.getElementById(ROMelement)
+
         // Firt remove all the previous search
         removeAllChilds(predList)
         
@@ -155,15 +159,24 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
             
             let listElement = document.createElement('li');
             listElement.innerHTML = element
-
-            // When clicked on list, erase all elements and add the clicked one to the searchbar
-            listElement.addEventListener("click", function(){
+            console.log(ROMelement)
+            
+            if(ROMelement == "predictionList"){
+                listElement.addEventListener("click", function(){
                 
-                removeAllChilds(predList)
-                let searchBar = document.getElementById("elasticSearch")
-                searchBar.value = this.innerHTML
+                    removeAllChilds(predList)
+                    let searchBar = document.getElementById("elasticSearch")
+                    searchBar.value = this.innerHTML
+    
+                })
+            }else if(ROMelement == "treeList"){
+                listElement.addEventListener("click", function(){
+                    alert("Opening Phylocloud")
+                    // Go to Phylocloud
+                })
+            }
+            // When clicked on list, erase all elements and add the clicked one to the searchbar
 
-            })
             
             predList.appendChild(listElement)
         })
@@ -190,9 +203,9 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
                 
             bod => {
                 if(retrieveField == "gene"){
-                    updateList(bod, inputGene)
+                    updateList(bod, "predictionList")
                 }else if(retrieveField == "trees"){
-                    alert("Trees that contain the searched gene:" + bod)
+                    updateList(bod, "treeList")
                 }
             }
         )
@@ -209,12 +222,23 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
             <button id="searchButton" onClick={(e) => searchTrees()}>Search</button>
 		</div>
 
-        <div className={style.searchWrapper}>
-            <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={() => sendElasticReq("gene")}></input>
-            <button onClick={() => sendElasticReq("trees")}>Elastic</button>
-            <ul id="predictionList"></ul>
+
+        <div className = {style.searchNTreeWrap}>
+
+            <div className={style.searchWrapper}>
+                <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={() => sendElasticReq("gene")}></input>
+                <button onClick={() => sendElasticReq("trees")}>Elastic</button>
+                <ul id="predictionList"></ul>
+            </div>
+
+            <div className={style.treeShower}>
+                <h2>Trees</h2>
+                <ul id = "treeList"></ul>
+            </div>
+
         </div>
-        <h1>This page is not ready. Thank you for your understanding</h1>
+
+
 		<div id="div_ete" className={style.div_ete}>
 			<iframe onLoad={(e) => iframeListen()} className={style.ete4frame} title="ete4" id = "eteDefault">
 			</iframe>

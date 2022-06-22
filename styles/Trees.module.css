@@ -1,3 +1,4 @@
+
 .div_ete{
 	display:none;
 	background-color: "red";
@@ -17,6 +18,78 @@
 	display:none;
 }
 
-.elementOfTreeList{
 
+
+
+
+.searchNTreeWrap{
+    display: grid;
+    gap:1em;
+    padding-left: 2em;
+    padding-right:2em;
+    grid-template-columns: 1fr 1fr;
+    background-color: rgb(190, 113, 113);
 }
+
+/*ELASTICSEARCH bar*/
+.searchWrapper{
+    font-family: 'ABeeZee', sans-serif;
+    background-color: antiquewhite;
+    overflow: auto;
+}
+
+.searchWrapper input{
+    width:75%;
+    height: 10vh;
+    font-size: 1.5vw
+}
+.searchWrapper button{
+    width: 22%;
+    height: 11vh;
+    font-size: 2vw
+}
+
+.searchWrapper ul{
+    width:90%;
+    height: 20%;
+    font-size: 1.5vw;
+    color:brown;
+    font-family: 'ABeeZee', sans-serif;
+    cursor:pointer;
+    background-color: blueviolet;
+}
+
+.searchWrapper li{
+    background-color: rgb(47, 200, 200);
+}
+
+.searchWrapper li:hover{
+    background-color: rgb(63, 148, 148);
+}
+
+/* Tree shower */
+.treeShower{
+    font-family: 'ABeeZee', sans-serif;
+    background-color: antiquewhite;
+    overflow: auto;
+}
+
+.treeShower h2{
+    padding-left:1em;
+}
+.treeShower ul{
+    font-size: 1.5vw;
+    color:brown;
+    font-family: 'ABeeZee', sans-serif;
+    cursor:pointer;
+    background-color: blueviolet;
+}
+
+.treeShower li{
+    background-color: rgb(47, 200, 200);
+}
+
+.treeShower li:hover{
+    background-color: rgb(63, 148, 148);
+}
+
