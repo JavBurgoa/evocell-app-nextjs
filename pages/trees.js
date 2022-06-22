@@ -28,101 +28,101 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 	
 	}
 	*/
-	function removeAllChildNodes(parent) {
-    	while (parent.firstChild) {
-       		parent.removeChild(parent.firstChild);
-    	}
-	}
+	// function removeAllChildNodes(parent) {
+    // 	while (parent.firstChild) {
+    //    		parent.removeChild(parent.firstChild);
+    // 	}
+	// }
 
-	function searchTrees(){
-		// Acticvated when someone submits a gene pressing the "Search" buttton
-		//Appends a list with all trees that have that gene within.
+	// function searchTrees(){
+	// 	// Acticvated when someone submits a gene pressing the "Search" buttton
+	// 	//Appends a list with all trees that have that gene within.
 
-		const input = document.getElementById("searchBar");
-    	var selcGene = input.value.toUpperCase();
-    	const list = document.getElementById("treesList");
-    	var data = JSON.parse(treesPerGene) // This comes from static props. the dictionary
+	// 	const input = document.getElementById("searchBar");
+    // 	var selcGene = input.value.toUpperCase();
+    // 	const list = document.getElementById("treesList");
+    // 	var data = JSON.parse(treesPerGene) // This comes from static props. the dictionary
     	
     	
-    	removeAllChildNodes(list)
-    	// Create an entry per tree
-    	if(data[selcGene] !== undefined){
+    // 	removeAllChildNodes(list)
+    // 	// Create an entry per tree
+    // 	if(data[selcGene] !== undefined){
 
-    		for(var i in data[selcGene]){
+    // 		for(var i in data[selcGene]){
 
-				var elementOfList = document.createElement("button")
-				elementOfList.className = "elementOfTreeList"
-				elementOfList.innerHTML = data[selcGene][i]
-				elementOfList.addEventListener("click", openETE)
-				list.appendChild(elementOfList)
+	// 			var elementOfList = document.createElement("button")
+	// 			elementOfList.className = "elementOfTreeList"
+	// 			elementOfList.innerHTML = data[selcGene][i]
+	// 			elementOfList.addEventListener("click", openETE)
+	// 			list.appendChild(elementOfList)
 
-    		}
-    	}else{
-    		alert("Could not find gene, please type the exact name (Caps are not a problem) p.ej:  '252671.XLOC_0124'")
-    	}
-	}
+    // 		}
+    // 	}else{
+    // 		alert("Could not find gene, please type the exact name (Caps are not a problem) p.ej:  '252671.XLOC_0124'")
+    // 	}
+	// }
 	
 
-	//wrap these three functions in a single one, and make the elementOfTreelist do it
-	function fetchTree(){
-		// When you click on any of the appended trees, it retrieves the exact tree from minio
-		// kepin mind some trees end in .faa.aln.nw and other in .aln.nw, so you will have to add try statements here and there.
-		//name of tree will be data[selcGene] again
-		return("")
-	}
+	// //wrap these three functions in a single one, and make the elementOfTreelist do it
+	// function fetchTree(){
+	// 	// When you click on any of the appended trees, it retrieves the exact tree from minio
+	// 	// kepin mind some trees end in .faa.aln.nw and other in .aln.nw, so you will have to add try statements here and there.
+	// 	//name of tree will be data[selcGene] again
+	// 	return("")
+	// }
 
-	function customETE(nameoftree){
-		//POst tree to ETE and output path to iframe
-		return("")
-	}
+	// function customETE(nameoftree){
+	// 	//POst tree to ETE and output path to iframe
+	// 	return("")
+	// }
 
-	function openETE(){
-		//when click on a tree, hide search and display iframe
+	// function openETE(){
+	// 	//when click on a tree, hide search and display iframe
 		
-		const search = document.getElementById("search");
-		search.style["display"] = "none";
+	// 	const search = document.getElementById("search");
+	// 	search.style["display"] = "none";
 		
-		const ete_div = document.getElementById("div_ete");
-		ete_div.style["display"] = "block";
+	// 	const ete_div = document.getElementById("div_ete");
+	// 	ete_div.style["display"] = "block";
 
-		//load ete. If you load it from the beginning it says (cannot load bevcuase zoom = 0)
-		const eteDefault = document.getElementById("eteDefault");
-		eteDefault.src = "https://phylocloud-ziqi.compgenomics.org/headless/tree_page/61b9bdef3947c122665b8252/" // This url should come from static props
+	// 	//load ete. If you load it from the beginning it says (cannot load bevcuase zoom = 0)
+	// 	const eteDefault = document.getElementById("eteDefault");
+	// 	eteDefault.src = "https://phylocloud-ziqi.compgenomics.org/headless/tree_page/61b9bdef3947c122665b8252/" // This url should come from static props
 
-	}
+	// }
 
-	function iframeListen(){
-		// Function that is activated when the ete4 iframe loads
-		// It adds an event listener that is triggered every time chorme recieves a message from the igrame, this is every time you make an action on the iframe.
+	// function iframeListen(){
+	// 	// Function that is activated when the ete4 iframe loads
+	// 	// It adds an event listener that is triggered every time chorme recieves a message from the igrame, this is every time you make an action on the iframe.
 		
-		window.addEventListener('message', handler);
-	}
+	// 	window.addEventListener('message', handler);
+	// }
 
-	function handler() {
-		/*
-		This should be added, being eteURL a static prop
-		if (event.origin != eteUrl)
-        	return("")
+	// function handler() {
+	// 	/*
+	// 	This should be added, being eteURL a static prop
+	// 	if (event.origin != eteUrl)
+    //     	return("")
 		
-		const dict = {
-			"XLOC_006965":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_006965",
-			"XLOC_005491":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_005491"
-		}
+	// 	const dict = {
+	// 		"XLOC_006965":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_006965",
+	// 		"XLOC_005491":"https://cells-test.gi.ucsc.edu/?ds=evocell+clyhem&gene=XLOC_005491"
+	// 	}
 
-		var iframe = document.getElementById('eteDefault');
-		iframe.contentWindow.postMessage({
-			selectionMode: "saved",
-			eventType: "select",
-			selectCommand: "/e p.get('hasData') == True"
-		}, "http://127.0.0.1:5000/")
+	// 	var iframe = document.getElementById('eteDefault');
+	// 	iframe.contentWindow.postMessage({
+	// 		selectionMode: "saved",
+	// 		eventType: "select",
+	// 		selectCommand: "/e p.get('hasData') == True"
+	// 	}, "http://127.0.0.1:5000/")
 		
-    	*/
-	}
+    // 	*/
+	// }
 
 
-	const eteLoader = ({ src, width, quality }) => { // needed for static export to work. Check https://nextjs.org/docs/api-reference/next/image#loader
-  		return `http://127.0.0.1:5000/`
-	}
+	// const eteLoader = ({ src, width, quality }) => { // needed for static export to work. Check https://nextjs.org/docs/api-reference/next/image#loader
+  	// 	return `http://127.0.0.1:5000/`
+	// }
 	/////////////// !!!!!!!!!!!!!!!!!! Change <img> to <Image/> to allow next export (otherwise it doesn work) you need to play with loaders like the one above (https://nextjs.org/docs/api-reference/next/image#loader)  
 
 
