@@ -14,9 +14,9 @@ const Help = () => {
 
     return(
         <>
-        <div class={style.help_div}>
-            <button class={style.accordion_help} onClick={() => addFuncAccordion("use_panel")}>How to use the EvoCELL DB</button>
-                <div class={style.panel} id="use_panel">
+        <div className={style.help_div}>
+            <button className={style.accordion_help} onClick={() => addFuncAccordion("use_panel")}>How to use the EvoCELL DB</button>
+                <div className={style.panel} id="use_panel">
                     <p>The EvoCELL DB is a resource that allows you to visualiza and download single-cell data from various species, focusing on non-model species and spanning whole organism or full embryo atlases.<br></br>
                     First you will see a navigation panel on the top of the page with three sections: Datasets, Trees and Help.
                     </p>
@@ -36,10 +36,10 @@ const Help = () => {
                     </p>
                 </div>
 
-            <button class={style.accordion_help} onClick={() => addFuncAccordion("seurat_panel")}>How to use single-cell in Seurat</button>
-                <div class={style.panel} id="seurat_panel">
+            <button className={style.accordion_help} onClick={() => addFuncAccordion("seurat_panel")}>How to use single-cell in Seurat</button>
+                <div className={style.panel} id="seurat_panel">
                     <p>
-                        You may want to perform advanced analyses on the datasets exposed in this resource. To do so, you can download the datasets with the instructions in the help section "How to use the EvoCELL DB".<br></br>
+                        You may want to perform advanced analyses on the datasets exposed in this resource. To do so, you can download the datasets with the instructions in the help section &quot;How to use the EvoCELL DB&quot;.<br></br>
                         The datasets are in H5AD format, which is a Scanpy (Python) friendly object. If you want to open this object in Seurat you should follow these instructions:
                     </p>
                     <p>
@@ -47,9 +47,19 @@ const Help = () => {
                     </p>
                 </div>
 
-            <button class={style.accordion_help} onClick={() => addFuncAccordion("evo_panel")}>The EvoCELL network</button>
-                <div class={style.panel} id="evo_panel">
+            <button className={style.accordion_help} onClick={() => addFuncAccordion("ucsc_panel")}>How to use UCSC browser</button>
+                <div className={style.panel} id="ucsc_panel">
+                    <p>Check the Documentation right on <a href = "https://cellbrowser.readthedocs.io/en/master/interface.html" target="_blank" rel="noreferrer">UCSC&ldquo;s web</a></p>
+                </div>
+            <button className={style.accordion_help} onClick={() => addFuncAccordion("phylocloud_panel")}>How to use Phylocloud</button>
+                <div className={style.panel} id="phylocloud_panel">
+                    <p>Check <a href = "https://github.com/compgenomicslab/phylocloud_help/wiki" target="_blank" rel="noreferrer">Phylocloud&ldquo;s wiki</a> to learn all the functions it has</p>
+                </div>
+
+                <button className={style.accordion_help} onClick={() => addFuncAccordion("evo_panel")}>The EvoCELL network</button>
+                <div className={style.panel} id="evo_panel">
                     <p>EvoCELL is a Marie Skłodowska-Curie Innovative Training Network. The project started back in 2018 for a duration of 3.5 years aiming at studying the evolution of cell-types and tissues in a diverse array of vertebrates and invertebrates. To do so, the labs involved in the network used the most recent single-cell and tissue genomic techniques, merging them with more traditional disciplines.</p>
+                    
                     <h2>Single-Cell</h2>
                     <p>With the aim of studying evolution from a cell-type perspective, EvoCELL members have been generating single-cell data from a variety of non-model metazoans, from Clytia hemisphaerica to Platynereis dumerilii. There are different lines of research within the network including regeneration, nervous system, development etc. Each line has produced its own datasets from its own model species and there are now efforts on integrating these data to extract evolutionary conclusions. These datasets include mostly whole adult organism cells, but also embryos and tissues. All single cell data generated has been published and some of it is now accessible through the UCSC Cell Browser.</p>
 
@@ -83,15 +93,6 @@ const Help = () => {
                     <h2>People</h2>
                     <p>The EvoCell Network has been training across the years a great number of PhD and Pre-doc students. It includes aswell some of the top researchers in cell identity and evolution. You can see them all here.</p>
                     <p>Website: https://evocell-itn.eu/</p>
-                </div>
-
-            <button class={style.accordion_help} onClick={() => addFuncAccordion("ucsc_panel")}>How to use UCSC browser</button>
-                <div class={style.panel} id="ucsc_panel">
-                    <p>Check the Documentation right on <a href = "https://cellbrowser.readthedocs.io/en/master/interface.html" target="_blank">UCSC's web</a></p>
-                </div>
-            <button class={style.accordion_help} onClick={() => addFuncAccordion("phylocloud_panel")}>How to use Phylocloud</button>
-                <div class={style.panel} id="phylocloud_panel">
-                    <p>Check <a href = "https://github.com/compgenomicslab/phylocloud_help/wiki" target="_blank">Phylocloud's wiki</a> to learn all the functions it has</p>
                 </div>
         </div>
         </>

@@ -1,3 +1,5 @@
+// Need to be run on MEMBLs VPN
+
 var elastic = require("@elastic/elasticsearch")
 require('dotenv').config({ path: `.env.local` })
 var Minio = require('minio');
@@ -8,12 +10,15 @@ const fs = require('fs');
 
 async function createIndex(dictio, idx, client) {
     //Add a new index to a elasticsearch client
+
     for (var key in dictio){
         
         var value = dictio[key];
         console.log("value: " + value)
         console.log("key: " + key)
 
+
+        
         // Add to index
         await client.index({
                     index: idx,
@@ -24,20 +29,23 @@ async function createIndex(dictio, idx, client) {
                     }
         })
 
-        // Somehow we need keywords but this is not the way:
-        // client.indices.putMapping({
-        //     index: idx,
-        //     body: {
-        //         properties: {
-        //           "gene": { type:"keyword"},
-        //           "trees":{ type:"keyword"},
-        //         }
-        //     }
-        // })
+
     }
+
+        // Somehow we need keywords but this is not the way:
+        client.indices.putMapping({
+            index: idx,
+            body: {
+                properties: {
+                    "gene": { type:"keyword"},
+                    "trees":{ type:"keyword"},
+                }
+            }
+        })
+
+
     
-    
-      await client.indices.refresh({index: idx})
+    await client.indices.refresh({index: idx})
 }
 
 async function deleteIndex(idx, client){
@@ -127,27 +135,29 @@ var ElastiClient = new elastic.Client({
 
 
 // ##### Update Elasticsearch ##### //
-let treesgenes = fs.readFileSync('searchDict.JSON');
-treesgenes = JSON.parse(treesgenes);
-deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
-createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
+//let treesgenes = fs.readFileSync('searchDict.JSON');
+//treesgenes = JSON.parse(treesgenes); 
+//deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
+//createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
 //countDocuments(ElastiClient).catch((e) => console.log(e))
 
 
 
 
 // ####### SANDBOX ######
+
+
 //Get Dictionary from Minio instead of local file (Reading from a buffer leads to itroduction of artifacts fro some reason.)
-//let TreesGenes = getFile("evocell", "searchDict.JSON")
-//TreesGenes.then((e) => {
-    //let treesgenes = e
-    //treesgenes = treesgenes.replace( /,\"/g, '"' ).replace( /,,/g, ',' ).replace(/:,/g, ',').replace(//g, "");
+let TreesGenes = getFile("evocell", "searchDict30K.JSON")
+TreesGenes.then((e) => {
+    let treesgenes = e
+    //treesgenes = treesgenes.replace( /,\"/g, '"' ).replace( /,,/g, ',' ).replace(/:,/g, ',');
     //JSON.parse(treesgenes)
-    //treesgenes = JSON.parse(treesgenes)
-    //deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
+    treesgenes = JSON.parse(treesgenes)
+    deleteIndex("trees", ElastiClient).catch((e) => console.log(e))
    //createIndex(treesgenes, "trees", ElastiClient).catch((e) => console.log(e))
    //countDocuments(ElastiClient).catch((e) => console.log(e))
-//})
+})
 
 // #### sandbox on making searches ####
 
