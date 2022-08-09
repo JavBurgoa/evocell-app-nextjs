@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch'
 var fs = require("fs")
+require('dotenv').config({ path: __dirname + '/.env.local' })
 
 // ############## Config
 export const config = {
@@ -40,6 +41,17 @@ export async function ElasticSearch(client, gene, retrieveField){
     // client: Elasticsearch client logged in
     // gene: String. whatever you want to search in the elasticsearchi index
     // retrieveField. String, "gene" or "trees". If gene then the search will include substring search, otherwise it will be a exact search
+
+    //########################
+
+    // async function countDocuments(client){
+    //     let count = await client.cat.indices()
+    //     console.log(count)
+    // }
+
+    // countDocuments(client).catch((e) => console.log(e))
+    //########################
+
     if(retrieveField ==  "trees"){
         // Exact search
         var body = {
@@ -51,6 +63,7 @@ export async function ElasticSearch(client, gene, retrieveField){
                 }
             },
         }
+
     }else if(retrieveField ==  "gene"){
         
         // Only do wildcard if search has enough length
@@ -60,6 +73,7 @@ export async function ElasticSearch(client, gene, retrieveField){
         }
 
         var body = {
+            size: 100,
             query: {
                 "query_string" : {"default_field" : "gene", 
                                   "query" : gene,
@@ -70,13 +84,13 @@ export async function ElasticSearch(client, gene, retrieveField){
         
     }
 
-
-    // Search
+    
+    // Search !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     var result = await client.search({
         index: 'trees',
         body: body
     })
-
+    console.log(result)
     return(result)
 
 }
@@ -92,10 +106,13 @@ try {
     var gene = req[0]
     var retrieveField = req[1]
 
+    // Modifications done to the search query
+    gene = gene.replace("\|", " ")
+
     // search in genes
     const body = await ElasticSearch(client, gene, retrieveField)
-    //console.log(body.hits.hits)
-    
+
+    console.log(body)
     // Retrieve gene or its correspondent tree
     let hits = body.hits.hits
     let results = []

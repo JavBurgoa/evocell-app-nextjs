@@ -200,8 +200,10 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
             }
             return res.json()
         }).then(
-                
+            
             bod => {
+                console.log("caca")
+                console.log(bod)
                 if(retrieveField == "gene"){
                     updateList(bod, "predictionList")
                 }else if(retrieveField == "trees"){

@@ -29,8 +29,12 @@
     padding-right:2em;
     grid-template-columns: 1fr 1fr;
     background-color: rgb(190, 113, 113);
+    height:42vh
 }
 
+#predictionList{
+    background-color:rgb(255, 255, 255)
+}
 /*ELASTICSEARCH bar*/
 .searchWrapper{
     font-family: 'ABeeZee', sans-serif;
@@ -51,12 +55,13 @@
 
 .searchWrapper ul{
     width:90%;
-    height: 20%;
+    height: 25vh;
     font-size: 1.5vw;
     color:brown;
     font-family: 'ABeeZee', sans-serif;
     cursor:pointer;
     background-color: blueviolet;
+    overflow: auto;
 }
 
 .searchWrapper li{
