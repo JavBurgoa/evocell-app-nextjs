@@ -28,6 +28,7 @@
     padding-left: 2em;
     padding-right:2em;
     grid-template-columns: 1fr 1fr;
+    
     background-color: rgb(190, 113, 113);
     height:42vh
 }
@@ -45,31 +46,54 @@
 .searchWrapper input{
     width:75%;
     height: 10vh;
-    font-size: 1.5vw
+    font-size: 1.5vw;
+    float: left;
+    padding-bottom: 5px;
+    padding-left: 1vw;
 }
+
+.searchWrapper input + .searchWrapper input{
+    margin-left: 80px;
+ }
+
 .searchWrapper button{
     width: 22%;
     height: 11vh;
-    font-size: 2vw
+    font-size: 2vw;
+    vertical-align: bottom;
+    float: left;
+    padding-bottom: 5px;
+    background: #15047a;
+    color: white;
+    font-size: 2vw;
+    border: 1px solid grey;
+    border-left: none;
+    cursor: pointer;
+    font-family: 'ABeeZee', sans-serif;
 }
 
 .searchWrapper ul{
-    width:90%;
+    width:95%;
     height: 25vh;
     font-size: 1.5vw;
-    color:brown;
+    color:black;
+    padding-left: 2%;
+    border-color: #15047a;
     font-family: 'ABeeZee', sans-serif;
-    cursor:pointer;
-    background-color: blueviolet;
+    background-color: white;
     overflow: auto;
+    list-style-type: none;
+    
 }
 
 .searchWrapper li{
-    background-color: rgb(47, 200, 200);
+    cursor:pointer;
+    background-color: rgb(255, 255, 255);
+    padding: 0.5vh;
 }
 
 .searchWrapper li:hover{
-    background-color: rgb(63, 148, 148);
+    background-color: rgb(214, 218, 218);
 }
 
 /* Tree shower */
@@ -81,20 +105,39 @@
 
 .treeShower h2{
     padding-left:1em;
+    text-align: center;
+    font-size: 2vw;
+
 }
 .treeShower ul{
     font-size: 1.5vw;
-    color:brown;
+    color:white;
     font-family: 'ABeeZee', sans-serif;
-    cursor:pointer;
-    background-color: blueviolet;
+    background-color: white;
 }
 
 .treeShower li{
-    background-color: rgb(47, 200, 200);
+    background-color: #15047a;
+    padding:1%;
+    margin-bottom: 1%;
+    text-align: center;
+    width: 50%;
+    cursor:pointer;
+    border-radius: 20px 20px 20px 20px;
 }
 
 .treeShower li:hover{
-    background-color: rgb(63, 148, 148);
+    background-color: #14046e;
+}
+
+
+.help_text{
+    padding-top: 3%;
+    text-align: center;
+}
+
+.help_text p{
+    font-family: 'ABeeZee', sans-serif;
+    font-size: large;
 }
 

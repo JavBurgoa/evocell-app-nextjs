@@ -147,12 +147,18 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
     function updateList(array, ROMelement){
         // array: array
         //      Array full of strings. All of them will be attached to a list
-        // element: string,
+        // ROMelement: string,
         //      ID of the list to which the elements in the array will be added
         let predList = document.getElementById(ROMelement)
 
         // Firt remove all the previous search
         removeAllChilds(predList)
+        
+        // IF CANNOT FIND GENE IN TREE, STOP UPDATING AND INFORM
+        if (array.length === undefined && ROMelement == "treeList"){
+            alert("Gene/protein not found in any tree");
+            return;
+        }
         
         // Add the new search
         array.forEach(function(element) {
@@ -202,8 +208,6 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
         }).then(
             
             bod => {
-                console.log("caca")
-                console.log(bod)
                 if(retrieveField == "gene"){
                     updateList(bod, "predictionList")
                 }else if(retrieveField == "trees"){
@@ -211,30 +215,23 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
                 }
             }
         )
+
     }
 
 
 
 	return (
 		<>
-		<div id="search">
-			<h1>Search gene</h1>
-            <input type="text" id="searchBar" placeholder="Gene in Phylome" title="Type in a gene">
-            </input>
-            <button id="searchButton" onClick={(e) => searchTrees()}>Search</button>
-		</div>
-
-
         <div className = {style.searchNTreeWrap}>
 
             <div className={style.searchWrapper}>
                 <input type="text" id="elasticSearch" placeholder="Gene" title="Type in a gene" onChange={() => sendElasticReq("gene")}></input>
-                <button onClick={() => sendElasticReq("trees")}>Elastic</button>
+                <button onClick={() => sendElasticReq("trees")}>Search</button>
                 <ul id="predictionList"></ul>
             </div>
 
             <div className={style.treeShower}>
-                <h2>Trees</h2>
+                <h2>Choose a tree</h2>
                 <ul id = "treeList"></ul>
             </div>
 
@@ -248,6 +245,10 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 			<iframe src={ete_url} className={style.ete4frame} title="ete5">
 			</iframe>
 		</div>
+
+        <div className={style.help_text}>
+            <p>Please go to the "Help" section in the navigation bar. At the end of the How to use the EvoCELL DB tab you will see how to use this page.</p>
+        </div>
 		</>
 		)
 }
