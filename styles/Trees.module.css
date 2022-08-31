@@ -29,7 +29,7 @@
     padding-right:2em;
     grid-template-columns: 1fr 1fr;
     
-    background-color: rgb(190, 113, 113);
+    background-color: white;
     height:42vh
 }
 
@@ -39,7 +39,7 @@
 /*ELASTICSEARCH bar*/
 .searchWrapper{
     font-family: 'ABeeZee', sans-serif;
-    background-color: antiquewhite;
+    background-color: white;
     overflow: auto;
 }
 
@@ -58,7 +58,7 @@
 
 .searchWrapper button{
     width: 22%;
-    height: 11vh;
+    height: 11.15vh;
     font-size: 2vw;
     vertical-align: bottom;
     float: left;
@@ -66,7 +66,7 @@
     background: #15047a;
     color: white;
     font-size: 2vw;
-    border: 1px solid grey;
+    border: 2px solid black;
     border-left: none;
     cursor: pointer;
     font-family: 'ABeeZee', sans-serif;
@@ -99,16 +99,20 @@
 /* Tree shower */
 .treeShower{
     font-family: 'ABeeZee', sans-serif;
-    background-color: antiquewhite;
+    background-color: white;
+    border: 2px solid black;
     overflow: auto;
 }
 
 .treeShower h2{
     padding-left:1em;
+    margin-top: 3.5vh;
+    height: 4.5vh;
     text-align: center;
     font-size: 2vw;
 
 }
+
 .treeShower ul{
     font-size: 1.5vw;
     color:white;

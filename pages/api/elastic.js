@@ -96,6 +96,20 @@ export async function ElasticSearch(client, gene, retrieveField){
 }
 
 
+function remove_prefix(elements){
+    // This function removes the first letter from each element of an array
+    // Here used to remove the "X" prefix, which made sure the indexing read all genes as text and not numbers
+    for(var i = 0; i < elements.Length; i++){
+
+        elements[i] = elements[i].replace(/^X/i, "")
+        elements[i] = "a"
+    
+    }
+        
+    
+    return elements
+}
+
 // ####### Final function (will be exectued when recieving a POST)
 export default async function searchES(req, res) {
 try {
@@ -108,6 +122,7 @@ try {
 
     // Modifications done to the search query
     gene = gene.replace("\|", " ")
+    gene = "X" + gene
 
     // search in genes
     const body = await ElasticSearch(client, gene, retrieveField)
@@ -123,9 +138,17 @@ try {
 
     // For trees, pseparate them
     if(retrieveField == "trees"){
+        
         console.log(results)
         results = results[0].split("|")
+    
     }
+    //else if (retrieveField == "gene"){
+        
+    //    results = remove_prefix(results)
+
+    //}
+
     return res.send(results)
     
 } catch (error) {

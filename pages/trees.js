@@ -232,6 +232,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 
             <div className={style.treeShower}>
                 <h2>Choose a tree</h2>
+                <hr></hr>
                 <ul id = "treeList"></ul>
             </div>
 
