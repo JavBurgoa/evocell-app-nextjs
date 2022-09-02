@@ -248,7 +248,7 @@ const Trees = ({ trees, ete_url, newicks, treesPerGene}) => {
 		</div>
 
         <div className={style.help_text}>
-            <p>Please go to the "Help" section in the navigation bar. At the end of the How to use the EvoCELL DB tab you will see how to use this page.</p>
+            <p>Please go to the &quot;Help&quot; section in the navigation bar. At the end of the How to use the EvoCELL DB tab you will see how to use this page.</p>
         </div>
 		</>
 		)
