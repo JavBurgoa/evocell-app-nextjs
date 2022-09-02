@@ -32,7 +32,7 @@ const Help = () => {
                     </p>
                     <p>
                      If you navigate to the Trees tab on the navigation bar you will be able to explore the evolutionary relationships of genes.
-                     Here you can input any Uniprot Protein ID or human ortholog name. After clicking "Search" you will see on the right all gene-trees that have the searched gene. Click on one of them to go to Phylocloud and explore it.
+                     Here you can input any Uniprot Protein ID or human ortholog name. After clicking &quot;Search&quot; you will see on the right all gene-trees that have the searched gene. Click on one of them to go to Phylocloud and explore it.
                     You will notice a number preceeding the Uniprot IDs, this is a TaxID identifier, specifying the species to which it belongs.
                     </p>
                 </div>
